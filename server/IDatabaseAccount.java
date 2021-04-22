@@ -1,5 +1,7 @@
 package server;
 
+import java.util.UUID;
+
 public interface IDatabaseAccount {
 
 
@@ -12,12 +14,12 @@ public interface IDatabaseAccount {
 
 
     /**
-     * Get user account by username
-     * @param username
-     * @return user object by that name from database
+     * Get user account by UUID
+     * @param uuid
+     * @return user object by that id from database
      */
 
-    User getAccount(String username);
+    User getAccount(UUID uuid);
 
 
 }

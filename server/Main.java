@@ -10,13 +10,11 @@ public class Main {
     // main function.
     public static void main(String[] args) {
 
-        User user = new User(UUID.randomUUID(), "test", "test", OrganisationUnit.IT, User.AccountType.ADMIN);
-
-        try {
-            System.out.println(user.getPassword());
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            e.printStackTrace();
-        }
+        User user = new User(UUID.randomUUID(),
+                "test",
+                "test",
+                new Organisation("Accounting"),
+                User.AccountType.ADMIN);
 
     }
 

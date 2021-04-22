@@ -7,7 +7,7 @@ public class User {
     private final UUID id;
     private String username;
     private String password;
-    private OrganisationUnit unit;
+    private Organisation unit;
     private final AccountType accountType;
 
     /**
@@ -18,7 +18,7 @@ public class User {
      * @param unit unit organisation
      * @param type account type
      */
-    public User(UUID id, String username, String password, OrganisationUnit unit, AccountType type) {
+    public User(UUID id, String username, String password, Organisation unit, AccountType type) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -26,41 +26,81 @@ public class User {
         this.accountType = type;
     }
 
+    /**
+     * Get username
+     * @return Username String
+     */
+
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
+    /**
+     * Changes user's password to specified.
+     * @param username
+     */
+
+    public void changeUsername(String username) {
         this.username = username;
     }
 
-    public javax.crypto.SecretKey getPassword() throws java.security.spec.InvalidKeySpecException, java.security.NoSuchAlgorithmException {
-        java.security.SecureRandom random = new java.security.SecureRandom();
-        byte[] salt = new byte[16];
-        random.nextBytes(salt);
-        java.security.spec.KeySpec spec = new javax.crypto.spec.PBEKeySpec(password.toCharArray(), salt, 65536, 128);
-        return javax.crypto.SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1").generateSecret(spec);
+    /**
+     * Get user's salted and hashed password
+     * @return String
+     */
+
+    public String getPassword() {
+        return password;
     }
 
-    public void setPassword(String password) {
+    /**
+     * Changes user's password to specified.
+     * @param password
+     */
+
+    public void changePassword(String password) {
         this.password = password;
     }
 
-    public OrganisationUnit getUnit() {
+    /**
+     * Get organisation user is from
+     * @return Unit
+     */
+
+    public Organisation getUnit() {
         return unit;
     }
 
-    public void setUnit(OrganisationUnit unit) {
+    /**
+     * Changes user's organisation to specified.
+     * @param unit
+     */
+
+    public void changeUnit(Organisation unit) {
         this.unit = unit;
     }
+
+    /**
+     * Gets user's account type
+     * @return type.
+     */
 
     public AccountType getAccountType() {
         return accountType;
     }
 
+    /**
+     * Gets users unique id
+     * @return UUID
+     */
+
     public UUID getId() {
         return id;
     }
+
+    /**
+     * Account type enum specify whether they are admin or a user.
+     */
 
     enum AccountType {
         ADMIN,
