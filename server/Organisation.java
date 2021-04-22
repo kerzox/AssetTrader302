@@ -1,9 +1,15 @@
 package server;
 
+import java.util.HashMap;
+
 public class Organisation {
 
     private final String name;
-    private int budget;
+    private int creditBudget;
+
+    // not sure if this will stay a map could be added to the asset class
+
+    private HashMap<Asset, Integer> totalAssets = new HashMap<>();
 
     public Organisation(String name) {
         this(name, 0);
@@ -17,7 +23,7 @@ public class Organisation {
 
     public Organisation(String name, int budget) {
         this.name = name;
-        this.budget = budget;
+        this.creditBudget = budget;
     }
 
     /**
@@ -35,7 +41,7 @@ public class Organisation {
      */
 
     public int getBudget() {
-        return budget;
+        return creditBudget;
     }
 
     /**
@@ -44,7 +50,7 @@ public class Organisation {
      */
 
     public void addCredits(int amount) {
-        this.budget = amount;
+        this.creditBudget = amount;
     }
 
     /**
@@ -59,10 +65,31 @@ public class Organisation {
      */
 
     public void removeCredits(int amount) {
-        if (budget < amount) {
-            return;
-        }
-        this.budget -= amount;
+        if (creditBudget < amount) return;
+        this.creditBudget -= amount;
+    }
+
+    /**
+     * Creates a buy order
+     * @param assetToBuy
+     * @param amount
+     * @param creditCost
+     */
+
+    public void createBuyOrder(Asset assetToBuy, int amount, int creditCost) {
+        if (creditCost > creditBudget) return; // throw exception
+        // add buy order to gui and database
+    }
+
+    /**
+     * Creates a sell order
+     * @param assetToSell
+     * @param amount
+     * @param creditCost
+     */
+
+    public void createSellOrder(Asset assetToSell, int amount, int creditCost) {
+        if (totalAssets.get(assetToSell) < amount) return; // throw exception
     }
 
 }
