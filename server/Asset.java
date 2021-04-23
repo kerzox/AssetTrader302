@@ -6,6 +6,7 @@ public class Asset {
 
     public Asset(String name) {
         this.name = name;
+        DatabaseHelper.addAsset(this);
     }
 
     public String getName() {

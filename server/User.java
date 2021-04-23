@@ -102,7 +102,7 @@ public class User {
      * Account type enum specify whether they are admin or a user.
      */
 
-    enum AccountType {
+    public enum AccountType {
         ADMIN,
         USER;
     }

@@ -24,6 +24,7 @@ public class Organisation {
     public Organisation(String name, int budget) {
         this.name = name;
         this.creditBudget = budget;
+        DatabaseHelper.addOrganisation(this);
     }
 
     /**
@@ -70,14 +71,23 @@ public class Organisation {
     }
 
     /**
+     * Gets total asset map
+     * @return
+     */
+
+    public HashMap<Asset, Integer> getTotalAssets() {
+        return totalAssets;
+    }
+
+    /**
      * Creates a buy order
      * @param assetToBuy
      * @param amount
      * @param creditCost
      */
 
-    public void createBuyOrder(Asset assetToBuy, int amount, int creditCost) {
-        if (creditCost > creditBudget) return; // throw exception
+    public void createBuyOrder(Asset assetToBuy, int amount, int creditCost) throws IllegalArgumentException {
+        if (creditCost > creditBudget) throw new IllegalArgumentException("Not enough credit"); // throw exception
         // add buy order to gui and database
     }
 
@@ -90,6 +100,14 @@ public class Organisation {
 
     public void createSellOrder(Asset assetToSell, int amount, int creditCost) {
         if (totalAssets.get(assetToSell) < amount) return; // throw exception
+    }
+
+    public void removeBuyOrder(Asset asset) {
+        DatabaseHelper.removeListing(this, asset, false);
+    }
+
+    public void removeSellOrder(Asset asset) {
+        DatabaseHelper.removeListing(this, asset, true);
     }
 
 }
