@@ -19,12 +19,9 @@ public class Gui {
         JButton userBtn = new JButton("USER");
         JButton adminBtn = new JButton("ADMIN");
 
-        userBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose(); // Close Login Frame
-                buildUser(); // Build User Frame
-            }
+        userBtn.addActionListener(e -> {
+            frame.dispose(); // Close Login Frame
+            buildUser(); // Build User Frame
         });
 
         JLabel userLabel = new JLabel("Username");
@@ -96,18 +93,13 @@ public class Gui {
         cl.show(panelCont, "panel2");
 
         button1.addActionListener(e -> cl.show(panelCont, "panel3"));
-        // These are both the same b1 and b2. One is done with lambda
-        button2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cl.show(panelCont, "panel2");
-            }
-        });
+        button2.addActionListener(e -> cl.show(panelCont, "panel2"));
 
         frame.add(panelCont);
         frame.pack(); // Leave size management to layout manager -- CardLayout
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Terminate program on closure
         frame.setVisible(true);
+
 
     }
 

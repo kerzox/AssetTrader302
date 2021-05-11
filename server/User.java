@@ -4,42 +4,40 @@ import java.util.UUID;
 
 public class User {
 
-    private final UUID id;
     private String username;
     private String password;
     private Organisation unit;
-    private final AccountType accountType;
 
     /**
      * User constructor
-     * @param id unique id
      * @param username username for account
      * @param password password for account
      * @param unit unit organisation
-     * @param type account type
      */
-    public User(UUID id, String username, String password, Organisation unit, AccountType type) {
-        this.id = id;
+    public User(String username, String password, Organisation unit) {
         this.username = username;
         this.password = password;
         this.unit = unit;
-        this.accountType = type;
     }
 
     /**
      * Get username
      * @return Username String
      */
-
     public String getUsername() {
         return username;
     }
 
     /**
+     *
+     * @param username to set
+     */
+    public void setUsername(String username) { this.username = username; }
+
+    /**
      * Changes user's password to specified.
      * @param username
      */
-
     public void changeUsername(String username) {
         this.username = username;
     }
@@ -48,16 +46,20 @@ public class User {
      * Get user's salted and hashed password
      * @return String
      */
-
     public String getPassword() {
         return password;
     }
 
     /**
+     *
+     * @param password to set
+     */
+    public void setPassword(String password) { this.password = password; }
+
+    /**
      * Changes user's password to specified.
      * @param password
      */
-
     public void changePassword(String password) {
         this.password = password;
     }
@@ -66,45 +68,22 @@ public class User {
      * Get organisation user is from
      * @return Unit
      */
+    public String getUnit() {  return unit.getName(); }
 
-    public Organisation getUnit() {
-        return unit;
-    }
+    /**
+     *
+     * @param unit to set
+     */
+    public void setUnit(Organisation unit) { this.unit = unit; }
 
     /**
      * Changes user's organisation to specified.
      * @param unit
      */
-
     public void changeUnit(Organisation unit) {
         this.unit = unit;
     }
 
-    /**
-     * Gets user's account type
-     * @return type.
-     */
 
-    public AccountType getAccountType() {
-        return accountType;
-    }
-
-    /**
-     * Gets users unique id
-     * @return UUID
-     */
-
-    public UUID getId() {
-        return id;
-    }
-
-    /**
-     * Account type enum specify whether they are admin or a user.
-     */
-
-    public enum AccountType {
-        ADMIN,
-        USER;
-    }
 
 }
