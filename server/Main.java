@@ -19,6 +19,15 @@ public class Main {
 
         database = new JDBCDatabaseSource();
 
+        TemporaryTesting();
+
+        database.closeDatabaseSource();
+    }
+
+    /**
+     * Testing Function for database purposes
+     */
+    private static void TemporaryTesting() {
         unitTest = new Organisation("unit1", 10000);
         database.addOrganisation(unitTest);
 
@@ -47,7 +56,5 @@ public class Main {
         String unitBudget = unit[2];
 
         System.out.println(unitID + " " + unitName + " " + unitBudget);
-
-        database.closeDatabaseSource();
     }
 }

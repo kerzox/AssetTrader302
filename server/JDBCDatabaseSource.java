@@ -13,11 +13,8 @@ public class JDBCDatabaseSource {
                     + "PRIMARY KEY (userID),"
                     + "FOREIGN KEY (unitName) REFERENCES organisation(unitName)"
                     + ");";
-
     private static final String INSERT_ACCOUNT = "INSERT INTO account (userName, password, unitName) VALUES (?, ?, ?);";
     private static final String GET_ACCOUNT = "SELECT * FROM account WHERE userName=?";
-
-
 
     public static final String CREATE_TABLE_ORGANISATION =
             "CREATE TABLE IF NOT EXISTS organisation ("
@@ -26,7 +23,6 @@ public class JDBCDatabaseSource {
                     + "budget INTEGER NOT NULL,"
                     + "PRIMARY KEY (unitName)"
                     + ")";
-
     private static final String INSERT_UNIT = "INSERT INTO organisation (unitName, budget) VALUES (?, ?);";
     private static final String GET_UNIT = "SELECT * FROM organisation WHERE unitName=?";
 
@@ -38,6 +34,9 @@ public class JDBCDatabaseSource {
     private PreparedStatement addOrganisation;
     private PreparedStatement getOrganisation;
 
+    /**
+     * Constructor, constructs Database instance
+     */
     public JDBCDatabaseSource() {
         connection = JDBCConnection.getConnection();
 
@@ -55,6 +54,10 @@ public class JDBCDatabaseSource {
         }
     }
 
+    /**
+     * Adds account to database
+     * @param a User object to be added
+     */
     public void addAccount(User a) {
         try {
             /* BEGIN MISSING CODE */
@@ -70,6 +73,11 @@ public class JDBCDatabaseSource {
         }
     }
 
+    /**
+     * Gets account from database
+     * @param name Username of account
+     * @return User account as array list, else null
+     */
     public String[] getAccount(String name) {
         String[] account;
         String user;
@@ -92,6 +100,10 @@ public class JDBCDatabaseSource {
         return null;
     }
 
+    /**
+     * Adds organisation to database
+     * @param a organisation object to be added
+     */
     public void addOrganisation(Organisation a) {
         try {
             /* BEGIN MISSING CODE */
@@ -105,6 +117,11 @@ public class JDBCDatabaseSource {
         }
     }
 
+    /**
+     * Gets organisation from database
+     * @param name Name of organisation
+     * @return Organisation as an array list, else null
+     */
     public String[] getOrganisation(String name) {
         String[] organisation;
         String unitID;
@@ -127,6 +144,9 @@ public class JDBCDatabaseSource {
         return null;
     }
 
+    /**
+     * Closes database connection.
+     */
     public void closeDatabaseSource() {
         JDBCConnection.closeConnection();
     }
