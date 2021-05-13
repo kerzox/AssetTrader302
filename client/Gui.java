@@ -6,13 +6,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Gui {
-    public void buildLogin() {
-        LoginFrame login = new LoginFrame();
-    }
 
     public static void buildUser() {
         UserFrame userFrame = new UserFrame();
 
+    }
+
+    public static void buildAdmin() {
+        AdminFrame adminFrame = new AdminFrame();
     }
 
 }

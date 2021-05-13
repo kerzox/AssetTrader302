@@ -1,7 +1,5 @@
 package client;
 
-import server.User;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -30,8 +28,8 @@ public class LoginFrame extends JFrame implements ActionListener {
 
         setLayoutManager();
         setTextFieldsLogin();
-        buildLoginFrame();
-        addBtnActionLogin();
+        buildFrame();
+        addBtnAction();
 
         frame.add(container);
         frame.pack(); // Leave size management to layout manager -- CardLayout
@@ -45,7 +43,7 @@ public class LoginFrame extends JFrame implements ActionListener {
      * Add action listeners to buttons
      * Set self as source of listener
      */
-    public void addBtnActionLogin() {
+    private void addBtnAction() {
         userBtn.addActionListener(this);
         adminBtn.addActionListener(this);
     }
@@ -53,14 +51,14 @@ public class LoginFrame extends JFrame implements ActionListener {
     /**
      * Sets layout of container frame
      */
-    public void setLayoutManager() {
+    private void setLayoutManager() {
         container.setLayout(gbl); // Set layout to GridBagLayout for container Panel
     }
 
     /**
      * Configures text field objects
      */
-    public void setTextFieldsLogin() {
+    private void setTextFieldsLogin() {
         userTextField.setColumns(13);
         passwordTextField.setColumns(13);
     }
@@ -68,7 +66,7 @@ public class LoginFrame extends JFrame implements ActionListener {
     /**
      * Constructs positions and size of components in frame
      */
-    public void buildLoginFrame() {
+    private void buildFrame() {
         GridBagConstraints gbc = new GridBagConstraints();
         // gbc.fill = GridBagConstraints.HORIZONTAL; // All fields same horizontal length
         gbc.insets = new Insets(5, 5, 5, 5); // Between Spacing
@@ -124,6 +122,8 @@ public class LoginFrame extends JFrame implements ActionListener {
         if (e.getSource() == adminBtn) {
             if (userNameText.equalsIgnoreCase("root") && pwdText.equalsIgnoreCase("secret")) {
                 JOptionPane.showMessageDialog(this, "Login as Admin");
+                frame.dispose(); // Close Login Frame
+                Gui.buildAdmin();
             }
             else {
                 JOptionPane.showMessageDialog(this, "Failed Login as Admin", "Incorrect Login", JOptionPane.ERROR_MESSAGE);
