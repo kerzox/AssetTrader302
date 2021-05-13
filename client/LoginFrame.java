@@ -11,17 +11,17 @@ public class LoginFrame extends JFrame implements ActionListener {
 
     private GridBagLayout gbl = new GridBagLayout();
 
-    JFrame frame = new JFrame("Login"); // Create holding frame
-    JPanel container = new JPanel();
+    private JFrame frame = new JFrame("Login"); // Create holding frame
+    private JPanel container = new JPanel();
 
-    JButton userBtn = new JButton("USER");
-    JButton adminBtn = new JButton("ADMIN");
+    private JButton userBtn = new JButton("USER");
+    private JButton adminBtn = new JButton("ADMIN");
 
-    JLabel userLabel = new JLabel("Username");
-    JLabel pwdLabel = new JLabel("Password");
+    private JLabel userLabel = new JLabel("Username");
+    private JLabel pwdLabel = new JLabel("Password");
 
-    JTextField userTextField = new JTextField();
-    JPasswordField passwordTextField = new JPasswordField();
+    private JTextField userTextField = new JTextField();
+    private JPasswordField passwordTextField = new JPasswordField();
 
     /**
      * Constructor of LoginFrame
@@ -29,15 +29,15 @@ public class LoginFrame extends JFrame implements ActionListener {
     public LoginFrame() {
 
         setLayoutManager();
-        setTextFields();
+        setTextFieldsLogin();
         buildLoginFrame();
-        addBtnAction();
+        addBtnActionLogin();
 
         frame.add(container);
         frame.pack(); // Leave size management to layout manager -- CardLayout
         frame.setResizable(false); // Disable resizing
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Terminate program on closure
-        frame.setLocationRelativeTo(null);
+        frame.setLocationRelativeTo(null); // Centers GUI on open
         frame.setVisible(true);
     }
 
@@ -45,7 +45,7 @@ public class LoginFrame extends JFrame implements ActionListener {
      * Add action listeners to buttons
      * Set self as source of listener
      */
-    public void addBtnAction() {
+    public void addBtnActionLogin() {
         userBtn.addActionListener(this);
         adminBtn.addActionListener(this);
     }
@@ -60,7 +60,7 @@ public class LoginFrame extends JFrame implements ActionListener {
     /**
      * Configures text field objects
      */
-    public void setTextFields() {
+    public void setTextFieldsLogin() {
         userTextField.setColumns(13);
         passwordTextField.setColumns(13);
     }
@@ -112,6 +112,9 @@ public class LoginFrame extends JFrame implements ActionListener {
         if (e.getSource() == userBtn) {
             if (userNameText.equalsIgnoreCase("test") && pwdText.equalsIgnoreCase("pwd")) {
                 JOptionPane.showMessageDialog(this, "Login as User");
+                frame.dispose(); // Close Login Frame
+                Gui.buildUser();
+
             }
             else {
                 JOptionPane.showMessageDialog(this, "Failed Login as User", "Incorrect Login", JOptionPane.ERROR_MESSAGE);

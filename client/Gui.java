@@ -11,7 +11,8 @@ public class Gui {
     }
 
     public static void buildUser() {
-        UserFrame.buildUser();
+        UserFrame userFrame = new UserFrame();
+
     }
 
 }
