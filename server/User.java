@@ -65,10 +65,16 @@ public class User {
     }
 
     /**
-     * Get organisation user is from
-     * @return Unit
+     * Get organisation name user is from
+     * @return Unit name
      */
-    public String getUnit() {  return unit.getName(); }
+    public String getUnitName() {  return unit.getName(); }
+
+    /**
+     * Get organisation user is from
+     * @return Unit name
+     */
+    public Organisation getUnit() {  return unit; }
 
     /**
      *
