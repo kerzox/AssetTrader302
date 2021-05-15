@@ -3,6 +3,7 @@ package server;
 import client.Gui;
 
 import javax.swing.*;
+import java.util.UUID;
 
 public class Main {
 
@@ -15,14 +16,21 @@ public class Main {
     private static Asset assetTest;
     private static Asset assetTest2;
 
+    private static Listing listingTest;
+    private static Listing listingTest2; // Not in Database
+
     private static JDBCDatabaseSource database;
 
     // main function.
     public static void main(String[] args) {
 
+        // Initialise Process: you need to drop the database and recreate it or
+        // you will have some unexpected errors during testing
+
         database = new JDBCDatabaseSource();
 
-        TemporaryTesting();
+        addData();
+        getData();
 
         database.closeDatabaseSource();
     }
@@ -30,7 +38,7 @@ public class Main {
     /**
      * Testing Function for database purposes
      */
-    private static void TemporaryTesting() {
+    private static void addData() {
         unitTest = new Organisation("unit1", 10000);
         database.addOrganisation(unitTest);
 
@@ -50,6 +58,23 @@ public class Main {
         assetTest2 = new Asset("TABLES");
         database.addAsset(assetTest2);
 
+        try {
+            UUID uuid = UUID.randomUUID(); // Create random UUID
+            listingTest = new Listing(uuid, Listing.enumType.BUY, 1000, 6, test, assetTest);
+            database.addListing(listingTest);
+
+            // This will not work because the organisation will run out of budget!!
+            UUID uuid2 = UUID.randomUUID(); // Create random UUID
+            listingTest2 = new Listing(uuid2, Listing.enumType.BUY, 1000, 5, test, assetTest);
+            database.addListing(listingTest2);
+
+        } catch (BudgetException err) { // Catch if budget is exceeded.
+            System.out.println(err);
+        }
+
+    }
+
+    private static void getData() {
         String[] account = database.getAccount("adaeo");
 
         String userID = account[0];
