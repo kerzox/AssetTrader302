@@ -10,7 +10,7 @@ public class JDBCDatabaseSource {
                     + "userName VARCHAR(30) NOT NULL UNIQUE,"
                     + "password CHAR(128) NOT NULL,"
                     + "unitName VARCHAR(60) NOT NULL,"
-                    + "PRIMARY KEY (userID),"
+                    + "PRIMARY KEY (userName),"
                     + "FOREIGN KEY (unitName) REFERENCES organisation(unitName)"
                     + ");";
     private static final String INSERT_ACCOUNT = "INSERT INTO account (userName, password, unitName) VALUES (?, ?, ?);";
@@ -35,6 +35,25 @@ public class JDBCDatabaseSource {
     private static final String INSERT_ASSET = "INSERT INTO asset (assetName) VALUES (?);";
     private static final String GET_ASSET = "SELECT * from asset WHERE assetName=?;";
 
+    private static final String CREATE_TABLE_LISTING =
+            "CREATE TABLE IF NOT EXISTS listing ("
+                    + "listingID VARCHAR(36) NOT NULL UNIQUE," // from https://stackoverflow.com/a/41028314
+                    + "listingActive TINYINT(1) NOT NULL," // MariaDB uses TINYINT(1) instead of BOOL
+                    + "listingType ENUM('BUY', 'SELL') NOT NULL,"
+                    + "userName VARCHAR(30) NOT NULL,"
+                    + "unitName VARCHAR(60) NOT NULL,"
+                    + "assetName VARCHAR(60) NOT NULL,"
+                    + "assetQuantity INTEGER NOT NULL,"
+                    + "assetPrice INTEGER NOT NULL,"
+                    + "dateTime DATETIME NOT NULL,"
+                    + "PRIMARY KEY (listingID),"
+                    + "FOREIGN KEY (userName) REFERENCES account(userName),"
+                    + "FOREIGN KEY (unitName) REFERENCES account(unitName),"
+                    + "FOREIGN KEY (assetName) REFERENCES asset(assetName)"
+                    + ");";
+    private static final String INSERT_LISTING = "INSERT INTO listing (listingID, listingActive, listingType,"
+                                                + "userName, unitName, assetName, assetQuantity, assetPrice, dateTime)"
+                                                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private Connection connection;
 
@@ -44,6 +63,7 @@ public class JDBCDatabaseSource {
     private PreparedStatement getOrganisation;
     private PreparedStatement addAsset;
     private PreparedStatement getAsset;
+    private PreparedStatement addListing;
 
     /**
      * Constructor, constructs Database instance
@@ -56,12 +76,14 @@ public class JDBCDatabaseSource {
             st.execute(CREATE_TABLE_ORGANISATION);
             st.execute(CREATE_TABLE_ACCOUNT);
             st.execute(CREATE_TABLE_ASSET);
+            st.execute(CREATE_TABLE_LISTING);
             addAccount = connection.prepareStatement(INSERT_ACCOUNT);
             getAccount = connection.prepareStatement(GET_ACCOUNT, ResultSet.TYPE_SCROLL_INSENSITIVE);
             addOrganisation = connection.prepareStatement(INSERT_UNIT);
             getOrganisation = connection.prepareStatement(GET_UNIT, ResultSet.TYPE_SCROLL_INSENSITIVE);
             addAsset = connection.prepareStatement(INSERT_ASSET);
             getAsset = connection.prepareStatement(GET_ASSET, ResultSet.TYPE_SCROLL_INSENSITIVE);
+            addListing = connection.prepareStatement(INSERT_LISTING);
 
         } catch (SQLException SQLex) {
             System.out.println(SQLex);
@@ -74,12 +96,10 @@ public class JDBCDatabaseSource {
      */
     public void addAccount(User a) {
         try {
-            /* BEGIN MISSING CODE */
             addAccount.setString(1, a.getUsername());
             addAccount.setString(2, a.getPassword());
-            addAccount.setString(3, getOrganisation(a.getUnit())[1]);
+            addAccount.setString(3, getOrganisation(a.getUnitName())[1]);
             addAccount.execute();
-            /* END MISSING CODE */
         } catch (SQLException SQLex) {
             System.out.println(SQLex);
         } catch (NullPointerException NPex) {
@@ -122,11 +142,9 @@ public class JDBCDatabaseSource {
      */
     public void addOrganisation(Organisation a) {
         try {
-            /* BEGIN MISSING CODE */
             addOrganisation.setString(1, a.getName());
             addOrganisation.setString(2, String.valueOf(a.getBudget()));
             addOrganisation.execute();
-            /* END MISSING CODE */
         } catch (SQLException SQLex) {
             //SQLex.printStackTrace();
             System.out.println(SQLex);
@@ -166,10 +184,8 @@ public class JDBCDatabaseSource {
      */
     public void addAsset(Asset a) {
         try {
-            /* BEGIN MISSING CODE */
             addAsset.setString(1, a.getName());
             addAsset.execute();
-            /* END MISSING CODE */
         } catch (SQLException SQLex) {
             //SQLex.printStackTrace();
             System.out.println(SQLex);
@@ -199,6 +215,28 @@ public class JDBCDatabaseSource {
             System.out.println(SQLex);
         }
         return null;
+    }
+
+    /**
+     * Adds listing to database
+     * @param a listing object to be added
+     */
+    public void addListing(Listing a) {
+        try {
+            addListing.setString(1, a.getUUID().toString());
+            addListing.setString(2, String.valueOf(a.getActive()));
+            addListing.setString(3, a.getType());
+            addListing.setString(4, a.getUsername());
+            addListing.setString(5, a.getUnit());
+            addListing.setString(6, a.getAsset());
+            addListing.setString(7, String.valueOf(a.getAssetQuantity()));
+            addListing.setString(8, String.valueOf(a.getAssetPrice()));
+            addListing.setString(9, a.getDateTime());
+            addListing.execute();
+        } catch (SQLException SQLex) {
+            //SQLex.printStackTrace();
+            System.out.println(SQLex);
+        }
     }
 
     /**
