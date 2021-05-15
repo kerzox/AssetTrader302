@@ -54,6 +54,7 @@ public class JDBCDatabaseSource {
     private static final String INSERT_LISTING = "INSERT INTO listing (listingID, listingActive, listingType,"
                                                 + "userName, unitName, assetName, assetQuantity, assetPrice, dateTime)"
                                                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+    private static final String GET_LISTING = "SELECT * from listing WHERE listingID=?;";
 
     private Connection connection;
 
@@ -64,6 +65,7 @@ public class JDBCDatabaseSource {
     private PreparedStatement addAsset;
     private PreparedStatement getAsset;
     private PreparedStatement addListing;
+    private PreparedStatement getListing;
 
     /**
      * Constructor, constructs Database instance
@@ -77,6 +79,7 @@ public class JDBCDatabaseSource {
             st.execute(CREATE_TABLE_ACCOUNT);
             st.execute(CREATE_TABLE_ASSET);
             st.execute(CREATE_TABLE_LISTING);
+
             addAccount = connection.prepareStatement(INSERT_ACCOUNT);
             getAccount = connection.prepareStatement(GET_ACCOUNT, ResultSet.TYPE_SCROLL_INSENSITIVE);
             addOrganisation = connection.prepareStatement(INSERT_UNIT);
@@ -84,6 +87,7 @@ public class JDBCDatabaseSource {
             addAsset = connection.prepareStatement(INSERT_ASSET);
             getAsset = connection.prepareStatement(GET_ASSET, ResultSet.TYPE_SCROLL_INSENSITIVE);
             addListing = connection.prepareStatement(INSERT_LISTING);
+            getListing = connection.prepareStatement(GET_LISTING, ResultSet.TYPE_SCROLL_INSENSITIVE);
 
         } catch (SQLException SQLex) {
             System.out.println(SQLex);
@@ -237,6 +241,46 @@ public class JDBCDatabaseSource {
             //SQLex.printStackTrace();
             System.out.println(SQLex);
         }
+    }
+
+    /**
+     * Retrieve listing based on uuid
+     * @param uuid
+     * @return string array of listing
+     */
+    public String[] getListing(String uuid) {
+        String[] listing;
+        String listingID;
+        String listingType;
+        String listingActive;
+        String userName;
+        String unitName;
+        String assetName;
+        String assetQuantity;
+        String assetPrice;
+        String dateTime;
+        ResultSet rs;
+
+        try {
+            getListing.setString(1, uuid);
+            rs = getListing.executeQuery();
+            rs.first();
+            listingID = rs.getString("listingID");
+            listingActive = rs.getString("listingActive");
+            listingType = rs.getString("listingType");
+            userName = rs.getString("userName");
+            unitName = rs.getString("unitName");
+            assetName = rs.getString("assetName");
+            assetQuantity = rs.getString("assetQuantity");
+            assetPrice = rs.getString("assetPrice");
+            dateTime = rs.getString("dateTime");
+            listing = new String[] {listingID, listingActive, listingType, userName, unitName, assetName,
+                                    assetQuantity, assetPrice, dateTime};
+            return listing;
+        } catch (SQLException SQLex) {
+            System.out.println(SQLex);
+        }
+        return null;
     }
 
     /**

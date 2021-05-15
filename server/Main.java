@@ -71,7 +71,6 @@ public class Main {
         } catch (BudgetException err) { // Catch if budget is exceeded.
             System.out.println(err);
         }
-
     }
 
     private static void getData() {
@@ -105,5 +104,12 @@ public class Main {
         String assetName2 = asset2[1];
 
         System.out.println(assetID2 + " " + assetName2);
+
+        String[] listing = database.getListing(listingTest.getUUID().toString());
+        String listingString = "";
+        for (int i = 0; i < listing.length; i++) {
+            listingString = listingString + listing[i] + " ";
+        }
+        System.out.println(listingString);
     }
 }
