@@ -12,6 +12,9 @@ public class Main {
     private static Organisation unitTest;
     private static Organisation unitTest1; // Not in Database
 
+    private static Asset assetTest;
+    private static Asset assetTest2;
+
     private static JDBCDatabaseSource database;
 
     // main function.
@@ -38,16 +41,23 @@ public class Main {
         database.addAccount(test);
 
         // This will not work because unitTest1 organisation is not in the database!!
-        test2 = new User("william", "secret", unitTest1);
+        test2 = new User("kerzox", "secret", unitTest1);
         database.addAccount(test2);
+
+        assetTest = new Asset("CHAIRS");
+        database.addAsset(assetTest);
+
+        assetTest2 = new Asset("TABLES");
+        database.addAsset(assetTest2);
 
         String[] account = database.getAccount("adaeo");
 
-        String thisUser = account[0];
-        String thisPwd = account[1];
-        String thisUnit = account[2];
+        String userID = account[0];
+        String thisUser = account[1];
+        String thisPwd = account[2];
+        String thisUnit = account[3];
 
-        System.out.println(thisUser + " " + thisPwd + " " + thisUnit);
+        System.out.println(userID + " " + thisUser + " " + thisPwd + " " + thisUnit);
 
         String[] unit = database.getOrganisation("unit1");
 
@@ -56,5 +66,19 @@ public class Main {
         String unitBudget = unit[2];
 
         System.out.println(unitID + " " + unitName + " " + unitBudget);
+
+        String[] asset = database.getAsset("CHAIRS");
+
+        String assetID = asset[0];
+        String assetName = asset[1];
+
+        System.out.println(assetID + " " + assetName);
+
+        String[] asset2 = database.getAsset("TABLES");
+
+        String assetID2 = asset2[0];
+        String assetName2 = asset2[1];
+
+        System.out.println(assetID2 + " " + assetName2);
     }
 }
