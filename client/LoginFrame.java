@@ -108,7 +108,7 @@ public class LoginFrame extends JFrame implements ActionListener {
 
         // User ActionEvent
         if (e.getSource() == userBtn) {
-            if (userNameText.equalsIgnoreCase("test") && pwdText.equalsIgnoreCase("pwd")) {
+            if (userNameText.equals("test") && pwdText.equals("pwd")) {
                 JOptionPane.showMessageDialog(this, "Login as User");
                 frame.dispose(); // Close Login Frame
                 Gui.buildUser();
@@ -120,7 +120,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         }
         // Admin ActionEvent
         if (e.getSource() == adminBtn) {
-            if (userNameText.equalsIgnoreCase("root") && pwdText.equalsIgnoreCase("secret")) {
+            if (userNameText.equals("root") && pwdText.equals("secret")) {
                 JOptionPane.showMessageDialog(this, "Login as Admin");
                 frame.dispose(); // Close Login Frame
                 Gui.buildAdmin();
