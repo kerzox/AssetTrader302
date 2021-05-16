@@ -27,7 +27,7 @@ public class LoginFrame extends JFrame implements ActionListener {
     public LoginFrame() {
 
         setLayoutManager();
-        setTextFieldsLogin();
+        //setTextFieldsLogin();
         buildFrame();
         addBtnAction();
 
@@ -68,7 +68,7 @@ public class LoginFrame extends JFrame implements ActionListener {
      */
     private void buildFrame() {
         GridBagConstraints gbc = new GridBagConstraints();
-        // gbc.fill = GridBagConstraints.HORIZONTAL; // All fields same horizontal length
+        gbc.fill = GridBagConstraints.HORIZONTAL; // All fields same horizontal length
         gbc.insets = new Insets(5, 5, 5, 5); // Between Spacing
 
         gbc.gridx = 0;
@@ -79,9 +79,11 @@ public class LoginFrame extends JFrame implements ActionListener {
         gbc.gridy = 1;
         container.add(pwdLabel, gbc);
 
+        gbc.gridwidth = 2;
+        gbc.weightx = 1;
+
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.gridwidth = 2;
         container.add(userTextField, gbc);
 
         gbc.gridx = 1;
@@ -89,6 +91,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         container.add(passwordTextField, gbc);
 
         gbc.gridwidth = 1; // Reset grid width
+        gbc.weightx = 0;
 
         gbc.gridx = 1;
         gbc.gridy = 2;

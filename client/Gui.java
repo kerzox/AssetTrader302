@@ -7,6 +7,16 @@ import java.awt.event.ActionListener;
 
 public class Gui {
 
+    public static void main(String[] args) {
+
+        SwingUtilities.invokeLater(() -> {
+            LoginFrame login = new LoginFrame();
+        }); // Execute Runnable on AWT thread
+
+        // USER LOGIN: test, pwd
+        // ADMIN LOGIN: root, secret
+    }
+
     public static void buildUser() {
         UserFrame userFrame = new UserFrame();
 
