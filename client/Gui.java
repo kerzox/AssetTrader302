@@ -1,17 +1,18 @@
 package client;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class Gui {
+public class Gui implements Runnable {
 
-    public static void main(String[] args) {
-
+    @Override
+    public void run() {
         SwingUtilities.invokeLater(() -> {
             LoginFrame login = new LoginFrame();
+
+            // create client server thread
+            new Thread(new ClientServer()).start();
         }); // Execute Runnable on AWT thread
+
 
         // USER LOGIN: test, pwd
         // ADMIN LOGIN: root, secret

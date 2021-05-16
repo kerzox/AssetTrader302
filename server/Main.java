@@ -1,11 +1,23 @@
 package server;
 
 import client.Gui;
+import util.NetworkUtils;
 
 import javax.swing.*;
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public class Main {
+public class Main implements Runnable  {
+
+    private boolean initialized = false;
+    private static final int CURRENT_PORT = 10000;
+    private static final int SOCKET_TIMEOUT = 100;
+    private AtomicBoolean running = new AtomicBoolean(true);
 
     private static User test;
     private static User test2;
@@ -21,18 +33,56 @@ public class Main {
 
     private static JDBCDatabaseSource database;
 
-    // main function.
-    public static void main(String[] args) {
+
+    @Override
+    public void run() {
 
         // Initialise Process: you need to drop the database and recreate it or
         // you will have some unexpected errors during testing
+        if (!initialized) {
+            database = new JDBCDatabaseSource();
+            //addData();
+            //getData();
+            database.closeDatabaseSource();
+        }
 
-        database = new JDBCDatabaseSource();
+        while(true) {
+            runServer();
+        }
 
-        addData();
-        getData();
+    }
 
-        database.closeDatabaseSource();
+    private void initalize() {
+
+    }
+
+    public void runServer() {
+        try (ServerSocket server = new ServerSocket(CURRENT_PORT)) {
+
+            System.out.println("Server is running");
+
+            while(true) {
+                Socket client = server.accept();
+                System.out.println("Client connected");
+
+                String msg = "";
+
+                do {
+                    msg = NetworkUtils.readString(client);
+                    System.out.println(msg);
+                } while (msg == null || !msg.equals("quit"));
+
+                client.close();
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static int getPort(){
+        return CURRENT_PORT;
     }
 
     /**
