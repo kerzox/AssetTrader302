@@ -17,17 +17,16 @@ public class UserFrame extends JFrame implements ActionListener {
     private JPanel panelCont = new JPanel();
     private JPanel panelSide = new JPanel();
     private JPanel panelMain = new JPanel();
-    private JPanel panelCard1 = new JPanel();
-    private JPanel panelCard2 = new JPanel();
-    private JPanel panelCard3 = new JPanel();
+    private JPanel panelCard1 = new AccountPanel();
+    private JPanel panelCard2 = new BuySellPanel();
+    private JPanel panelCard3 = new ListingsPanel();
 
-    private JButton button1 = new JButton("Switch to 1");
-    private JButton button2 = new JButton("Switch to 2");
-    private JButton button3 = new JButton("Switch to 3");
+    private JButton button1 = new JButton("Account");
+    private JButton button2 = new JButton("Buy / Sell");
+    private JButton button3 = new JButton("Listings");
 
-    private JLabel panelLabel1 = new JLabel("PanelCard1");
-    private JLabel panelLabel2 = new JLabel("PanelCard2");
-    private JLabel panelLabel3 = new JLabel("PanelCard3");
+    private Color panelColor = new Color(240, 240, 240);
+    private Color sideColor = new Color(205, 205, 205);
 
     /**
      * Constructor of UserFrame
@@ -48,15 +47,7 @@ public class UserFrame extends JFrame implements ActionListener {
      * Constructs positions and size of components in frame
      */
     private void buildFrame() {
-
-        panelCard1.setBackground(Color.green);
-        panelCard1.add(panelLabel1);
-        panelCard2.setBackground(Color.yellow);
-        panelCard2.add(panelLabel2);
-        panelCard3.setBackground(Color.blue);
-        panelCard3.add(panelLabel3);
-
-        panelSide.setBackground(Color.red);
+        panelSide.setBackground(sideColor);
         panelSide.setPreferredSize(new Dimension(150, 500));
         panelSide.setLayout(gblPanelSide);
         gbcPanelSide.gridwidth = GridBagConstraints.REMAINDER; // Sets component as last in row
@@ -66,7 +57,7 @@ public class UserFrame extends JFrame implements ActionListener {
         panelSide.add(button2, gbcPanelSide);
         panelSide.add(button3, gbcPanelSide);
 
-        panelMain.setBackground(Color.BLACK);
+        panelMain.setBackground(panelColor);
         panelMain.setPreferredSize(new Dimension(850, 500));
         panelMain.setLayout(clPanelMain);
         panelMain.add(panelCard1, "panel1");

@@ -14,7 +14,6 @@ public class ClientServer implements Runnable {
     private static Socket SERVER = null;
     private static boolean shutdown = false;
 
-
     @Override
     public void run() {
         client();

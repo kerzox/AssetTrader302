@@ -4,6 +4,12 @@ import javax.swing.*;
 
 public class Gui implements Runnable {
 
+    private static String ClientUser;
+
+    public static String getSessionUser() { return ClientUser;}
+
+    public static void setSessionUser(String value) { ClientUser = value; }
+
     @Override
     public void run() {
         SwingUtilities.invokeLater(() -> {

@@ -116,6 +116,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         if (e.getSource() == userBtn) {
             if (userNameText.equals("test") && pwdText.equals("pwd")) {
                 JOptionPane.showMessageDialog(this, "Login as User");
+                Gui.setSessionUser(userNameText);
                 frame.dispose(); // Close Login Frame
                 Gui.buildUser();
 
@@ -128,6 +129,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         if (e.getSource() == adminBtn) {
             if (userNameText.equals("root") && pwdText.equals("secret")) {
                 JOptionPane.showMessageDialog(this, "Login as Admin");
+                Gui.setSessionUser(userNameText);
                 frame.dispose(); // Close Login Frame
                 Gui.buildAdmin();
             }

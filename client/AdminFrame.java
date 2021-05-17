@@ -68,8 +68,6 @@ public class AdminFrame extends JFrame implements ActionListener {
     private Color panelColor = new Color(240, 240, 240);
     private Color sideColor = new Color(205, 205, 205);
 
-
-
     /**
      * Constructor of UserFrame
      */
@@ -440,7 +438,6 @@ public class AdminFrame extends JFrame implements ActionListener {
         gbcPanelGrid5.gridy = 1;
         panelGrid5.add(creditsOrganisationCombo, gbcPanelGrid5);
 
-
         // BUTTONS
         gbcPanelGrid5.weightx = 0;
         gbcPanelGrid5.gridwidth = 1;
@@ -452,7 +449,6 @@ public class AdminFrame extends JFrame implements ActionListener {
         btnContainer.add(addCreditsBtn, BorderLayout.EAST); // Align Button right
         panelGrid5.add(btnContainer, gbcPanelGrid5);
     }
-
 
     /**
      * Builds labels
