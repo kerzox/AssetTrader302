@@ -1,4 +1,4 @@
 jdbc.url=jdbc:mariadb://localhost:3306
 jdbc.schema=assettrader302
 jdbc.username=root
-jdbc.password=pappin78w
+jdbc.password=password

@@ -22,7 +22,7 @@ public class ClientServer implements Runnable {
 
     public static void client() {
         try (Socket server = new Socket(HOSTNAME, CURRENT_PORT)) {
-            handleInteration(server);
+            handleInteraction(server);
 
         } catch (UnknownHostException e) {
 
@@ -34,7 +34,7 @@ public class ClientServer implements Runnable {
         }
     }
 
-    public static void handleInteration(Socket socket) {
+    public static void handleInteraction(Socket socket) {
         do {
             SERVER = socket;
         } while(SERVER.isConnected());

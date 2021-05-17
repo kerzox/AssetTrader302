@@ -86,8 +86,7 @@ public class Main implements Runnable  {
     }
 
     private void parseClientRequest(List<Object> data) {
-
-        if (Arrays.stream(Request.Type.values()).anyMatch(p -> p.equals(data.get(0)))) {
+        if (Arrays.stream(Request.Type.values()).anyMatch(p -> p.equals(data.get(1)))) {
             switch (Request.Type.valueOf(data.get(1).toString())) {
                 case ACCOUNT:
                     if (Request.Header.valueOf(data.get(0).toString()) == ALTER) {
