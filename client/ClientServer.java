@@ -12,26 +12,25 @@ public class ClientServer implements Runnable {
     private static final int CURRENT_PORT = 10000;
 
     private static Socket SERVER = null;
+    private static boolean shutdown = false;
 
 
     @Override
     public void run() {
-        while(true) {
-            client();
-        }
+        client();
     }
 
     public static void client() {
         try (Socket server = new Socket(HOSTNAME, CURRENT_PORT)) {
             handleInteration(server);
 
-        } catch (UnknownHostException ex) {
+        } catch (UnknownHostException e) {
 
-            System.out.println("Server not found: " + ex.getMessage());
+            System.out.println("Server not found: " + e.getMessage());
 
-        } catch (IOException ex) {
+        } catch (IOException e) {
 
-            System.out.println("I/O error: " + ex.getMessage());
+            System.out.println("I/O error: " + e.getMessage());
         }
     }
 
@@ -39,6 +38,8 @@ public class ClientServer implements Runnable {
         do {
             SERVER = socket;
         } while(SERVER.isConnected());
+
+        shutdown = true;
 
     }
 

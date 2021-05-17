@@ -1,16 +1,15 @@
 package server;
 
-import client.Gui;
 import util.NetworkUtils;
+import util.Request;
 
-import javax.swing.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static util.Request.Header.*;
 
 public class Main implements Runnable  {
 
@@ -41,9 +40,6 @@ public class Main implements Runnable  {
         // you will have some unexpected errors during testing
         if (!initialized) {
             database = new JDBCDatabaseSource();
-            //addData();
-            //getData();
-            database.closeDatabaseSource();
         }
 
         while(true) {
@@ -64,21 +60,79 @@ public class Main implements Runnable  {
             while(true) {
                 Socket client = server.accept();
                 System.out.println("Client connected");
-
-                String msg = "";
-
-                do {
-                    msg = NetworkUtils.readString(client);
-                    System.out.println(msg);
-                } while (msg == null || !msg.equals("quit"));
-
-                client.close();
-
+                handleConnection(client);
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void handleConnection(Socket client) {
+        try {
+
+            String msg = "";
+
+            do {
+
+                List<Object> list = NetworkUtils.read(client);
+                parseClientRequest(list);
+
+            } while (msg == null || !msg.equals("quit"));
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void parseClientRequest(List<Object> data) {
+
+        if (Arrays.stream(Request.Type.values()).anyMatch(p -> p.equals(data.get(0)))) {
+            switch (Request.Type.valueOf(data.get(1).toString())) {
+                case ACCOUNT:
+                    if (Request.Header.valueOf(data.get(0).toString()) == ALTER) {
+                    }
+                    if (Request.Header.valueOf(data.get(0).toString()) == CREATE) {
+                        database.addAccount(new User((String) data.get(2), (String) data.get(3),
+                                new Organisation(database.getOrganisation((String) data.get(4))[1],
+                                Integer.parseInt(database.getOrganisation((String) data.get(4))[2]))));
+                    }
+                    break;
+                case ASSET:
+                    if (Request.Header.valueOf(data.get(0).toString()) == ALTER) {
+                    }
+                    if (Request.Header.valueOf(data.get(0).toString()) == CREATE) {
+                        database.addAsset(new Asset((String) data.get(2)));
+                    }
+                    break;
+                case LISTING:
+                    if (Request.Header.valueOf(data.get(0).toString()) == ALTER) {
+
+                    }
+                    if (Request.Header.valueOf(data.get(0).toString()) == CREATE) {
+                        if (Listing.enumType.valueOf(data.get(3).toString()) == Listing.enumType.BUY) {
+                            database.addListing(new Listing(UUID.randomUUID(), Listing.enumType.BUY,
+                                    (int) data.get(4), (int) data.get(5), (User) data.get(6), (Asset) data.get(7)));
+                        } else {
+                            database.addListing(new Listing(UUID.randomUUID(), Listing.enumType.SELL,
+                                    (int) data.get(4), (int) data.get(5), (User) data.get(6), (Asset) data.get(7)));
+                        }
+                    }
+                    break;
+                case ORGANISATION:
+                    if (Request.Header.valueOf(data.get(0).toString()) == ALTER) {
+                    }
+                    if (Request.Header.valueOf(data.get(0).toString()) == CREATE) {
+                        database.addOrganisation(new Organisation((String) data.get(2)));
+                    }
+                    break;
+                default:
+                    data.forEach(System.out::println);
+            }
+        }
+
+        data.forEach(System.out::println);
+
     }
 
     public static int getPort(){

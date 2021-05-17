@@ -104,10 +104,8 @@ public class JDBCDatabaseSource {
             addAccount.setString(2, a.getPassword());
             addAccount.setString(3, getOrganisation(a.getUnitName())[1]);
             addAccount.execute();
-        } catch (SQLException SQLex) {
+        } catch (SQLException | NullPointerException SQLex) {
             System.out.println(SQLex);
-        } catch (NullPointerException NPex) {
-            System.out.println(NPex);
         }
     }
 

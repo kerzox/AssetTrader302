@@ -7,6 +7,10 @@ public class Organisation {
     private String name;
     private int budget;
 
+    public Organisation(String name) {
+        this(name, 0);
+    }
+
     /**
      * Constructor
      * @param name

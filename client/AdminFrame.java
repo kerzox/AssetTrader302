@@ -1,11 +1,15 @@
 package client;
 
 import util.NetworkUtils;
+import util.Request;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import static util.Request.Header.*;
+import static util.Request.Type.*;
 
 public class AdminFrame extends JFrame implements ActionListener {
 
@@ -476,64 +480,19 @@ public class AdminFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         try {
             if (e.getSource() == newAccountBtn) {
-                String userNameText = newUsernameTxt.getText();
-                char[] passwordChar = newPasswordTxt.getPassword();
-                String pwdText = new String(passwordChar);
-                String organisationText = (String) newOrganisationCombo.getSelectedItem();
-
-                if (userNameText.isEmpty() || pwdText.isEmpty()) {
-                    throw new TextInputException("Fields cannot be empty.");
-                }
-                else {
-                    System.out.println("ADDING --- Username: " + userNameText + " Password: "
-                            + pwdText + " Organisation: " + organisationText);
-                }
+                createAccount();
             }
             if (e.getSource() == editAccountBtn) {
-                String userNameText = (String) editUsernameCombo.getSelectedItem();
-                char[] passwordChar = editPasswordTxt.getPassword();
-                String pwdText = new String(passwordChar);
-                String organisationText = (String) editOrganisationCombo.getSelectedItem();
-
-                if (pwdText.isEmpty()) {
-                    throw new TextInputException("Fields cannot be empty.");
-                }
-                else {
-                    System.out.println("EDITING --- Username: " + userNameText + " Password: "
-                            + pwdText + " Organisation: " + organisationText);
-                }
+                editAccount();
             }
             if (e.getSource() == addCreditsBtn) {
-                String organisationText = (String) editOrganisationCombo.getSelectedItem();
-                int creditsInt = Integer.parseInt(addCreditsText.getText());
-
-                if (creditsInt <= 0) {
-                    throw new TextInputException("Fields cannot be empty or cannot be less than 1.");
-                }
-                else {
-                    System.out.println("ADDING CREDITS " + creditsInt +
-                            " to " + organisationText);
-                }
+                addCredits();
             }
             if (e.getSource() == newAssetBtn) {
-                String assetNameText = newAssetText.getText();
-
-                if (assetNameText.isEmpty()) {
-                    throw new TextInputException("Fields cannot be empty.");
-                }
-                else {
-                    System.out.println("ADDING ASSET: " + assetNameText);
-                }
+                createAsset();
             }
             if (e.getSource() == newOrganisationBtn) {
-                String organisationNameText = newOrganisationText.getText();
-
-                if (organisationNameText.isEmpty()) {
-                    throw new TextInputException("Fields cannot be empty.");
-                }
-                else {
-                    System.out.println("ADDING ORGANISATION: " + organisationNameText);
-                }
+                createOrganisation();
             }
         } catch (TextInputException tiex) {
             JOptionPane.showMessageDialog(this, tiex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -541,5 +500,73 @@ public class AdminFrame extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(this, "Input must be an integer.",
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void createOrganisation() {
+        String organisationNameText = newOrganisationText.getText();
+
+        if (organisationNameText.isEmpty()) {
+            throw new TextInputException("Fields cannot be empty.");
+        }
+        else {
+            System.out.println("ADDING ORGANISATION: " + organisationNameText);
+            NetworkUtils.write(ClientServer.getServer(), CREATE, ORGANISATION, organisationNameText);
+        }
+    }
+
+    private void createAsset() {
+        String assetNameText = newAssetText.getText();
+
+        if (assetNameText.isEmpty()) {
+            throw new TextInputException("Fields cannot be empty.");
+        }
+        else {
+            System.out.println("ADDING ASSET: " + assetNameText);
+            NetworkUtils.write(ClientServer.getServer(), CREATE, ASSET, assetNameText);
+        }
+    }
+
+    private void addCredits() {
+        String organisationText = (String) editOrganisationCombo.getSelectedItem();
+        int creditsInt = Integer.parseInt(addCreditsText.getText());
+
+        if (creditsInt <= 0) {
+            throw new TextInputException("Fields cannot be empty or cannot be less than 1.");
+        }
+        else {
+            System.out.println("ADDING CREDITS " + creditsInt +
+                    " to " + organisationText);
+        }
+    }
+
+    private void editAccount() {
+        String userNameText = (String) editUsernameCombo.getSelectedItem();
+        char[] passwordChar = editPasswordTxt.getPassword();
+        String pwdText = new String(passwordChar);
+        String organisationText = (String) editOrganisationCombo.getSelectedItem();
+
+        if (pwdText.isEmpty()) {
+            throw new TextInputException("Fields cannot be empty.");
+        }
+        else {
+            System.out.println("EDITING --- Username: " + userNameText + " Password: "
+                    + pwdText + " Organisation: " + organisationText);
+        }
+    }
+
+    private void createAccount() {
+        String userNameText = newUsernameTxt.getText();
+        char[] passwordChar = newPasswordTxt.getPassword();
+        String pwdText = new String(passwordChar);
+        String organisationText = (String) newOrganisationCombo.getSelectedItem();
+
+        if (userNameText.isEmpty() || pwdText.isEmpty()) {
+            throw new TextInputException("Fields cannot be empty.");
+        }
+
+        System.out.println("ADDING --- Username: " + userNameText + " Password: " + pwdText + " Organisation: " + organisationText);
+
+        NetworkUtils.write(ClientServer.getServer(), CREATE, ACCOUNT, userNameText, pwdText, organisationText);
+
     }
 }

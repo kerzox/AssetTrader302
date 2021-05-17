@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class LoginFrame extends JFrame implements ActionListener {
 
@@ -114,27 +115,24 @@ public class LoginFrame extends JFrame implements ActionListener {
         // User ActionEvent
         if (e.getSource() == userBtn) {
             if (userNameText.equals("test") && pwdText.equals("pwd")) {
-                NetworkUtils.writeString(ClientServer.getServer(), "Login as User");
                 JOptionPane.showMessageDialog(this, "Login as User");
                 frame.dispose(); // Close Login Frame
                 Gui.buildUser();
 
             }
             else {
-                NetworkUtils.writeString(ClientServer.getServer(), "Failed Login as User");
                 JOptionPane.showMessageDialog(this, "Failed Login as User", "Incorrect Login", JOptionPane.ERROR_MESSAGE);
             }
         }
         // Admin ActionEvent
         if (e.getSource() == adminBtn) {
             if (userNameText.equals("root") && pwdText.equals("secret")) {
-                NetworkUtils.writeString(ClientServer.getServer(), "Login as Admin");
                 JOptionPane.showMessageDialog(this, "Login as Admin");
                 frame.dispose(); // Close Login Frame
                 Gui.buildAdmin();
             }
             else {
-                NetworkUtils.writeString(ClientServer.getServer(), "Failed Login as Admin");
+                NetworkUtils.write(ClientServer.getServer(), "Failed to Log in as Admin");
                 JOptionPane.showMessageDialog(this, "Failed Login as Admin", "Incorrect Login", JOptionPane.ERROR_MESSAGE);
             }
         }
