@@ -92,16 +92,12 @@ public class Main implements Runnable  {
                     if (Request.Header.valueOf(data.get(0).toString()) == ALTER) {
                     }
                     if (Request.Header.valueOf(data.get(0).toString()) == CREATE) {
-                        database.addAccount(new User((String) data.get(2), (String) data.get(3),
-                                new Organisation(database.getOrganisation((String) data.get(4))[1],
-                                Integer.parseInt(database.getOrganisation((String) data.get(4))[2]))));
+                        addAccountDB(data);
                     }
                     break;
                 case ASSET:
-                    if (Request.Header.valueOf(data.get(0).toString()) == ALTER) {
-                    }
                     if (Request.Header.valueOf(data.get(0).toString()) == CREATE) {
-                        database.addAsset(new Asset((String) data.get(2)));
+                        addAssetDB(data);
                     }
                     break;
                 case LISTING:
@@ -122,16 +118,51 @@ public class Main implements Runnable  {
                     if (Request.Header.valueOf(data.get(0).toString()) == ALTER) {
                     }
                     if (Request.Header.valueOf(data.get(0).toString()) == CREATE) {
-                        database.addOrganisation(new Organisation((String) data.get(2)));
+                        addOrganisationDB(data);
                     }
                     break;
                 default:
-                    data.forEach(System.out::println);
+                    //data.forEach(System.out::println);
             }
         }
+        //data.forEach(System.out::println);
+    }
 
-        data.forEach(System.out::println);
+    /**
+     * Adds organisation to database
+     * @param data List of objects from client
+     */
+    private void addOrganisationDB(List<Object> data) {
+        database.addOrganisation(new Organisation((String) data.get(2)));
+    }
 
+    /**
+     * Adds asset to database
+     * @param data List of objects from client
+     */
+    private void addAssetDB(List<Object> data) {
+        database.addAsset(new Asset((String) data.get(2)));
+    }
+
+    /**
+     * Adds account to database
+     * @param data List of objects from client
+     */
+    private void addAccountDB(List<Object> data) {
+        String unitName = (String) data.get(4);
+        if (database.getOrganisation(unitName) != null) {
+            database.addAccount(
+                    new User(
+                            (String) data.get(2), // Username
+                            (String) data.get(3), // Password
+                            new Organisation( // Organisation
+                                    database.getOrganisation((String) data.get(4))[1], // Unit Name
+                                    Integer.parseInt(database.getOrganisation((String) data.get(4))[2]) // Budget
+                            )));
+        }
+        else {
+            System.out.println("Failed to add account");
+        }
     }
 
     public static int getPort(){

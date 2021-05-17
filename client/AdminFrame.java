@@ -81,6 +81,7 @@ public class AdminFrame extends JFrame implements ActionListener {
         frame.add(panelCont);
         frame.pack(); // Leave size management to layout managers
         frame.setTitle("AssetTrader302- ADMIN");
+        frame.setResizable(false); // Disable resizing
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Terminate program on closure
         frame.setLocationRelativeTo(null); // Centers GUI on open
         frame.setVisible(true);
@@ -543,6 +544,7 @@ public class AdminFrame extends JFrame implements ActionListener {
         String userNameText = (String) editUsernameCombo.getSelectedItem();
         char[] passwordChar = editPasswordTxt.getPassword();
         String pwdText = new String(passwordChar);
+        String hashedPwdTxt = PasswordHandling.HashString(pwdText);
         String organisationText = (String) editOrganisationCombo.getSelectedItem();
 
         if (pwdText.isEmpty()) {
@@ -550,7 +552,7 @@ public class AdminFrame extends JFrame implements ActionListener {
         }
         else {
             System.out.println("EDITING --- Username: " + userNameText + " Password: "
-                    + pwdText + " Organisation: " + organisationText);
+                    + hashedPwdTxt + " Organisation: " + organisationText);
         }
     }
 
@@ -558,15 +560,16 @@ public class AdminFrame extends JFrame implements ActionListener {
         String userNameText = newUsernameTxt.getText();
         char[] passwordChar = newPasswordTxt.getPassword();
         String pwdText = new String(passwordChar);
+        String hashedPwdTxt = PasswordHandling.HashString(pwdText);
         String organisationText = (String) newOrganisationCombo.getSelectedItem();
 
         if (userNameText.isEmpty() || pwdText.isEmpty()) {
             throw new TextInputException("Fields cannot be empty.");
         }
 
-        System.out.println("ADDING --- Username: " + userNameText + " Password: " + pwdText + " Organisation: " + organisationText);
+        System.out.println("ADDING --- Username: " + userNameText + " Password: " + hashedPwdTxt + " Organisation: " + organisationText);
 
-        NetworkUtils.write(ClientServer.getServer(), CREATE, ACCOUNT, userNameText, pwdText, organisationText);
+        NetworkUtils.write(ClientServer.getServer(), CREATE, ACCOUNT, userNameText, hashedPwdTxt, organisationText);
 
     }
 }

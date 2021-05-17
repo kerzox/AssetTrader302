@@ -90,7 +90,7 @@ public class JDBCDatabaseSource {
             getListing = connection.prepareStatement(GET_LISTING, ResultSet.TYPE_SCROLL_INSENSITIVE);
 
         } catch (SQLException SQLex) {
-            System.out.println(SQLex);
+            System.err.println(SQLex);
         }
     }
 
@@ -104,8 +104,14 @@ public class JDBCDatabaseSource {
             addAccount.setString(2, a.getPassword());
             addAccount.setString(3, getOrganisation(a.getUnitName())[1]);
             addAccount.execute();
-        } catch (SQLException | NullPointerException SQLex) {
-            System.out.println(SQLex);
+        } catch (SQLIntegrityConstraintViolationException SQLICVex) {
+            // Duplicate Entry
+            System.err.println(SQLICVex);
+            System.out.println("Duplicate account " + a.getUsername());
+            System.out.println("Failed to add account");
+        } catch (SQLException SQLex) {
+            System.err.println(SQLex);
+            System.out.println("Failed to add account");
         }
     }
 
@@ -132,8 +138,9 @@ public class JDBCDatabaseSource {
             unit = rs.getString("unitName");
             account = new String[] {userID, userName, pwd, unit};
             return account;
+
         } catch (SQLException SQLex) {
-            System.out.println(SQLex);
+            System.err.println(SQLex);
         }
         return null;
     }
@@ -147,9 +154,15 @@ public class JDBCDatabaseSource {
             addOrganisation.setString(1, a.getName());
             addOrganisation.setString(2, String.valueOf(a.getBudget()));
             addOrganisation.execute();
+        } catch (SQLIntegrityConstraintViolationException SQLICVex) {
+            // Duplicate Entry
+            System.err.println(SQLICVex);
+            System.out.println("Duplicate organisation " + a.getName());
+            System.out.println("Failed to add organisation");
         } catch (SQLException SQLex) {
-            //SQLex.printStackTrace();
-            System.out.println(SQLex);
+            // Other Exceptions SQL
+            System.err.println(SQLex);
+            System.out.println("Failed to add organisation");
         }
     }
 
@@ -175,7 +188,8 @@ public class JDBCDatabaseSource {
             organisation = new String[] {unitID, unitName, budget};
             return organisation;
         } catch (SQLException SQLex) {
-            System.out.println(SQLex);
+            System.err.println(SQLex);
+            System.out.println("No organisation " + name);
         }
         return null;
     }
@@ -188,9 +202,14 @@ public class JDBCDatabaseSource {
         try {
             addAsset.setString(1, a.getName());
             addAsset.execute();
+        } catch (SQLIntegrityConstraintViolationException SQLICVex) {
+            // Duplicate Entry
+            System.err.println(SQLICVex);
+            System.out.println("Duplicate asset " + a.getName());
+            System.out.println("Failed to add asset");
         } catch (SQLException SQLex) {
-            //SQLex.printStackTrace();
-            System.out.println(SQLex);
+            System.err.println(SQLex);
+            System.out.println("Failed to add asset");
         }
     }
 
@@ -214,7 +233,7 @@ public class JDBCDatabaseSource {
             asset = new String[] {assetID, assetName};
             return asset;
         } catch (SQLException SQLex) {
-            System.out.println(SQLex);
+            System.err.println(SQLex);
         }
         return null;
     }
@@ -237,7 +256,8 @@ public class JDBCDatabaseSource {
             addListing.execute();
         } catch (SQLException SQLex) {
             //SQLex.printStackTrace();
-            System.out.println(SQLex);
+            System.err.println(SQLex);
+            System.out.println("Failed to add listing");
         }
     }
 
@@ -276,7 +296,7 @@ public class JDBCDatabaseSource {
                                     assetQuantity, assetPrice, dateTime};
             return listing;
         } catch (SQLException SQLex) {
-            System.out.println(SQLex);
+            System.err.println(SQLex);
         }
         return null;
     }

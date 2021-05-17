@@ -132,7 +132,6 @@ public class LoginFrame extends JFrame implements ActionListener {
                 Gui.buildAdmin();
             }
             else {
-                NetworkUtils.write(ClientServer.getServer(), "Failed to Log in as Admin");
                 JOptionPane.showMessageDialog(this, "Failed Login as Admin", "Incorrect Login", JOptionPane.ERROR_MESSAGE);
             }
         }
