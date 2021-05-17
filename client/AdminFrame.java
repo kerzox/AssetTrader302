@@ -1,7 +1,6 @@
 package client;
 
 import util.NetworkUtils;
-import util.Request;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,8 +15,8 @@ public class AdminFrame extends JFrame implements ActionListener {
     /**
      * DUMMY ARRAY OF OBJECTS
      */
-    private String dummyUnits[] = {"unit1", "unit2", "unit3"};
-    private String dummyUsers[] = {"user1", "user2", "user3"};
+    private String[] dummyUnits = {"unit1", "unit2", "unit3"};
+    private String[] dummyUsers = {"user1", "user2", "user3"};
 
     private GridBagLayout gblPanelCont = new GridBagLayout();
     private GridBagLayout gblPanelMain = new GridBagLayout();
@@ -457,12 +456,10 @@ public class AdminFrame extends JFrame implements ActionListener {
 
     /**
      * Builds labels
-     * @param title
      * @return label containing title input
      */
     private JLabel buildLabel(String title) {
-        JLabel label = new JLabel(title);
-        return label;
+        return new JLabel(title);
     }
 
     /**
@@ -510,7 +507,7 @@ public class AdminFrame extends JFrame implements ActionListener {
             throw new TextInputException("Fields cannot be empty.");
         }
         else {
-            System.out.println("ADDING ORGANISATION: " + organisationNameText);
+            System.out.println("ADDING --- ORGANISATION: " + organisationNameText);
             NetworkUtils.write(ClientServer.getServer(), CREATE, ORGANISATION, organisationNameText);
         }
     }
@@ -528,7 +525,7 @@ public class AdminFrame extends JFrame implements ActionListener {
     }
 
     private void addCredits() {
-        String organisationText = (String) editOrganisationCombo.getSelectedItem();
+        String organisationText = (String) creditsOrganisationCombo.getSelectedItem();
         int creditsInt = Integer.parseInt(addCreditsText.getText());
 
         if (creditsInt <= 0) {
@@ -538,6 +535,8 @@ public class AdminFrame extends JFrame implements ActionListener {
             System.out.println("ADDING CREDITS " + creditsInt +
                     " to " + organisationText);
         }
+        NetworkUtils.write(ClientServer.getServer(), ALTER, ORGANISATION,
+                            organisationText, String.valueOf(creditsInt));
     }
 
     private void editAccount() {
@@ -550,10 +549,12 @@ public class AdminFrame extends JFrame implements ActionListener {
         if (pwdText.isEmpty()) {
             throw new TextInputException("Fields cannot be empty.");
         }
-        else {
-            System.out.println("EDITING --- Username: " + userNameText + " Password: "
-                    + hashedPwdTxt + " Organisation: " + organisationText);
-        }
+
+        System.out.println("EDITING --- Username: " + userNameText + " Password: "
+                + hashedPwdTxt + " Organisation: " + organisationText);
+        NetworkUtils.write(ClientServer.getServer(), ALTER, ACCOUNT, userNameText,
+                            hashedPwdTxt, organisationText);
+
     }
 
     private void createAccount() {
@@ -569,7 +570,8 @@ public class AdminFrame extends JFrame implements ActionListener {
 
         System.out.println("ADDING --- Username: " + userNameText + " Password: " + hashedPwdTxt + " Organisation: " + organisationText);
 
-        NetworkUtils.write(ClientServer.getServer(), CREATE, ACCOUNT, userNameText, hashedPwdTxt, organisationText);
+        NetworkUtils.write(ClientServer.getServer(), CREATE, ACCOUNT, userNameText,
+                            hashedPwdTxt, organisationText);
 
     }
 }

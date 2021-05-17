@@ -14,6 +14,7 @@ public class JDBCDatabaseSource {
                     + "FOREIGN KEY (unitName) REFERENCES organisation(unitName)"
                     + ");";
     private static final String INSERT_ACCOUNT = "INSERT INTO account (userName, password, unitName) VALUES (?, ?, ?);";
+    private static final String UPDATE_ACCOUNT = "UPDATE account SET password=?, unitName=? WHERE userName=?";
     private static final String GET_ACCOUNT = "SELECT * FROM account WHERE userName=?";
 
     private static final String CREATE_TABLE_ORGANISATION =
@@ -24,6 +25,7 @@ public class JDBCDatabaseSource {
                     + "PRIMARY KEY (unitName)"
                     + ");";
     private static final String INSERT_UNIT = "INSERT INTO organisation (unitName, budget) VALUES (?, ?);";
+    private static final String UPDATE_UNIT = "UPDATE organisation SET budget=? WHERE unitName=?";
     private static final String GET_UNIT = "SELECT * FROM organisation WHERE unitName=?;";
 
     private static final String CREATE_TABLE_ASSET =
@@ -59,8 +61,10 @@ public class JDBCDatabaseSource {
     private Connection connection;
 
     private PreparedStatement addAccount;
+    private PreparedStatement updateAccount;
     private PreparedStatement getAccount;
     private PreparedStatement addOrganisation;
+    private PreparedStatement updateOrganisation;
     private PreparedStatement getOrganisation;
     private PreparedStatement addAsset;
     private PreparedStatement getAsset;
@@ -81,8 +85,10 @@ public class JDBCDatabaseSource {
             st.execute(CREATE_TABLE_LISTING);
 
             addAccount = connection.prepareStatement(INSERT_ACCOUNT);
+            updateAccount = connection.prepareStatement(UPDATE_ACCOUNT);
             getAccount = connection.prepareStatement(GET_ACCOUNT, ResultSet.TYPE_SCROLL_INSENSITIVE);
             addOrganisation = connection.prepareStatement(INSERT_UNIT);
+            updateOrganisation = connection.prepareStatement(UPDATE_UNIT);
             getOrganisation = connection.prepareStatement(GET_UNIT, ResultSet.TYPE_SCROLL_INSENSITIVE);
             addAsset = connection.prepareStatement(INSERT_ASSET);
             getAsset = connection.prepareStatement(GET_ASSET, ResultSet.TYPE_SCROLL_INSENSITIVE);
@@ -116,6 +122,21 @@ public class JDBCDatabaseSource {
     }
 
     /**
+     * Updates existing account in database
+     * @param a User object to be updated
+     */
+    public void updateAccount(User a) {
+        try {
+            updateAccount.setString(1, a.getPassword());
+            updateAccount.setString(2, getOrganisation(a.getUnitName())[1]);
+            updateAccount.setString(3, a.getUsername());
+            updateAccount.execute();
+        } catch (SQLException SQLex) {
+            System.err.println(SQLex);
+        }
+    }
+
+    /**
      * Gets account from database
      * @param name Username of account
      * @return User account as array list, else null
@@ -141,6 +162,7 @@ public class JDBCDatabaseSource {
 
         } catch (SQLException SQLex) {
             System.err.println(SQLex);
+            System.out.println("No account " + name);
         }
         return null;
     }
@@ -163,6 +185,18 @@ public class JDBCDatabaseSource {
             // Other Exceptions SQL
             System.err.println(SQLex);
             System.out.println("Failed to add organisation");
+        }
+    }
+
+    public void updateOrganisation(Organisation a) {
+        try {
+            int currentBudget = Integer.parseInt(getOrganisation(a.getName())[2]);
+            int newBudget = currentBudget + a.getBudget();
+            updateOrganisation.setString(1, String.valueOf(newBudget));
+            updateOrganisation.setString(2, a.getName());
+            updateOrganisation.execute();
+        } catch (SQLException SQLex) {
+            System.err.println(SQLex);
         }
     }
 

@@ -90,6 +90,7 @@ public class Main implements Runnable  {
             switch (Request.Type.valueOf(data.get(1).toString())) {
                 case ACCOUNT:
                     if (Request.Header.valueOf(data.get(0).toString()) == ALTER) {
+                        editAccountDB(data);
                     }
                     if (Request.Header.valueOf(data.get(0).toString()) == CREATE) {
                         addAccountDB(data);
@@ -116,6 +117,7 @@ public class Main implements Runnable  {
                     break;
                 case ORGANISATION:
                     if (Request.Header.valueOf(data.get(0).toString()) == ALTER) {
+                        editOrganisationBudgetDB(data);
                     }
                     if (Request.Header.valueOf(data.get(0).toString()) == CREATE) {
                         addOrganisationDB(data);
@@ -134,6 +136,23 @@ public class Main implements Runnable  {
      */
     private void addOrganisationDB(List<Object> data) {
         database.addOrganisation(new Organisation((String) data.get(2)));
+    }
+
+    /**
+     * Edits budget of organisation in database
+     * @param data List of objects from client
+     */
+    private void editOrganisationBudgetDB(List<Object> data) {
+        String unitName = (String) data.get(2);
+        if (database.getOrganisation(unitName) != null) {
+            database.updateOrganisation(new Organisation(
+                    (String) data.get(2),
+                    Integer.parseInt((String) data.get(3))
+            ));
+        }
+        else {
+            System.out.println("Failed to edit budget");
+        }
     }
 
     /**
@@ -162,6 +181,27 @@ public class Main implements Runnable  {
         }
         else {
             System.out.println("Failed to add account");
+        }
+    }
+
+    /**
+     * Edits account in database
+     * @param data
+     */
+    private void editAccountDB(List<Object> data) {
+        String userName = (String) data.get(2);
+        String organisation = (String) data.get(4);
+        if (database.getAccount(userName) != null && database.getOrganisation(organisation) != null) {
+            database.updateAccount(new User(
+                    (String) data.get(2), // Username
+                    (String) data.get(3), // Password
+                    new Organisation( // Organisation
+                            database.getOrganisation((String) data.get(4))[1], // Unit Name
+                            Integer.parseInt(database.getOrganisation((String) data.get(4))[2]) // Budget
+                    )));
+        }
+        else {
+            System.out.println("Failed to edit account");
         }
     }
 
