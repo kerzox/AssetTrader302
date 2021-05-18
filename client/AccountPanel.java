@@ -110,6 +110,7 @@ public class AccountPanel extends JPanel implements ActionListener {
         panelGrid1.add(currentUserLabel, gbcGrid1);
 
         // TEXT FIELDS
+        gbcGrid1.insets = new Insets(5, 5, 5, 5);
         gbcGrid1.gridwidth = 1;
         gbcGrid1.weightx = 1;
         gbcGrid1.gridx = 1;
@@ -117,6 +118,7 @@ public class AccountPanel extends JPanel implements ActionListener {
         panelGrid1.add(editPasswordText, gbcGrid1);
 
         // BUTTONS
+        gbcGrid1.insets = new Insets(5, 5, 5, 25);
         gbcGrid1.weightx = 0;
         gbcGrid1.gridx = 2;
         gbcGrid1.gridy = 1;

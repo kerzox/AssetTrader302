@@ -525,7 +525,7 @@ public class AdminFrame extends JFrame implements ActionListener {
         int creditsInt = Integer.parseInt(addCreditsText.getText());
 
         if (creditsInt <= 0) {
-            throw new TextInputException("Fields cannot be empty or cannot be less than 1.");
+            throw new TextInputException("Fields cannot be empty or less than 1.");
         }
         else {
             System.out.println("ADDING CREDITS " + creditsInt +

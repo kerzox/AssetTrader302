@@ -106,12 +106,10 @@ public class Main implements Runnable  {
 
                     }
                     if (Request.Header.valueOf(data.get(0).toString()) == CREATE) {
-                        if (Listing.enumType.valueOf(data.get(3).toString()) == Listing.enumType.BUY) {
-                            database.addListing(new Listing(UUID.randomUUID(), Listing.enumType.BUY,
-                                    (int) data.get(4), (int) data.get(5), (User) data.get(6), (Asset) data.get(7)));
+                        if (Listing.enumType.valueOf(data.get(2).toString()) == Listing.enumType.BUY) {
+                            data.forEach(System.out::println);
                         } else {
-                            database.addListing(new Listing(UUID.randomUUID(), Listing.enumType.SELL,
-                                    (int) data.get(4), (int) data.get(5), (User) data.get(6), (Asset) data.get(7)));
+                           // data.forEach(System.out::println);
                         }
                     }
                     break;
