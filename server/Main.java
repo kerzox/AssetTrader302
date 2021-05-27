@@ -107,7 +107,7 @@ public class Main implements Runnable  {
                     }
                     if (Request.Header.valueOf(data.get(0).toString()) == CREATE) {
                         if (Listing.enumType.valueOf(data.get(2).toString()) == Listing.enumType.BUY) {
-                            data.forEach(System.out::println);
+                            addListing(data);
                         } else {
                            // data.forEach(System.out::println);
                         }
@@ -203,6 +203,56 @@ public class Main implements Runnable  {
         }
     }
 
+    /**
+     * Adds listing to database
+     * @param data
+     */
+    private void addListing(List<Object> data) {
+        data.forEach(System.out::println);
+        String listingType = data.get(2).toString();
+        String listingAsset = data.get(3).toString();
+        String listingQuantity = data.get(4).toString();
+        String listingPrice = data.get(5).toString();
+        String listingUser = data.get(6).toString();
+
+        if (database.getAccount(listingUser) != null && database.getAccount(listingAsset) != null) {
+            String listingOrganisation = database.getAccount(listingUser)[3];
+            String budget = database.getOrganisation(listingOrganisation)[2];
+            UUID uuid = UUID.randomUUID();
+            Listing.enumType listType = Listing.enumType.valueOf(listingType);
+            if (listType == Listing.enumType.BUY) {
+                if (Integer.parseInt(listingPrice) <= Integer.parseInt(budget)) { // Less than budget
+                    database.addListing(new Listing(
+                            uuid,
+                            listType,
+                            Integer.parseInt(listingQuantity),
+                            Integer.parseInt(listingPrice),
+                            listingUser,
+                            listingOrganisation,
+                            listingAsset
+                    ));
+                }
+                else {
+                    System.out.println("Not enough budget");
+                }
+            }
+            else {
+                database.addListing(new Listing(
+                        uuid,
+                        listType,
+                        Integer.parseInt(listingQuantity),
+                        Integer.parseInt(listingPrice),
+                        listingUser,
+                        listingOrganisation,
+                        listingAsset
+                ));
+            }
+        }
+        else {
+            System.out.println("Failed to add listing");
+        }
+    }
+
     public static int getPort(){
         return CURRENT_PORT;
     }
@@ -232,12 +282,12 @@ public class Main implements Runnable  {
 
         try {
             UUID uuid = UUID.randomUUID(); // Create random UUID
-            listingTest = new Listing(uuid, Listing.enumType.BUY, 1000, 6, test, assetTest);
+            listingTest = new Listing(uuid, Listing.enumType.BUY, 1000, 6, "test", "unit1", "assetTest");
             database.addListing(listingTest);
 
             // This will not work because the organisation will run out of budget!!
             UUID uuid2 = UUID.randomUUID(); // Create random UUID
-            listingTest2 = new Listing(uuid2, Listing.enumType.BUY, 1000, 5, test, assetTest);
+            listingTest2 = new Listing(uuid2, Listing.enumType.BUY, 1000, 5, "test", "unit1", "assetTest");
             database.addListing(listingTest2);
 
         } catch (BudgetException err) { // Catch if budget is exceeded.

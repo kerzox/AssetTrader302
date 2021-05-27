@@ -12,9 +12,9 @@ public class Listing {
     private int assetQuantity;
     private int assetPrice;
 
-    private Asset asset;
-    private User user;
-    private Organisation organisation;
+    private String asset;
+    private String user;
+    private String organisation;
 
     private String dateTime;
 
@@ -39,7 +39,7 @@ public class Listing {
      * @param user
      * @param asset
      */
-    public Listing(UUID uuid, enumType type, int assetQuantity, int assetPrice, User user, Asset asset) {
+    public Listing(UUID uuid, enumType type, int assetQuantity, int assetPrice, String user, String organisation, String asset) {
         this.uuid = uuid;
         active = 1; // 1 is True, 0 is False
         this.type = type.getType();
@@ -47,19 +47,11 @@ public class Listing {
         this.assetPrice = assetPrice;
         this.user = user;
         this.asset = asset;
-
+        this.organisation = organisation;
         LocalDateTime preDateTime = LocalDateTime.now();
         DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         dateTime = preDateTime.format(dateTimeFormat);
 
-        if (type == enumType.BUY) {
-            if ((assetPrice*assetQuantity >= user.getUnit().getBudget())) {
-                throw new BudgetException("Not enough credits."); // Throw if budget is exceeded.
-            }
-            else {
-                user.getUnit().subtractBudget(assetPrice*assetQuantity);
-            }
-        }
     }
 
     /**
@@ -75,7 +67,7 @@ public class Listing {
      * @return account username
      */
     public String getUsername() {
-        return user.getUsername();
+        return user;
     }
 
     /**
@@ -83,7 +75,7 @@ public class Listing {
      * @return account organisation
      */
     public String getUnit() {
-        return user.getUnitName();
+        return organisation;
     }
 
     /**
@@ -99,7 +91,7 @@ public class Listing {
      * @return type of asset
      */
     public String getAsset() {
-        return asset.getName();
+        return asset;
     }
 
     /**
