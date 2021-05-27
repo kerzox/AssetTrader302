@@ -10,6 +10,10 @@ public class Request {
         ACCOUNT,
         ASSET,
         ORGANISATION,
-        LISTING
+        LISTING,
+        CLIENTREQUEST,
+        SERVERRESPONSE
     }
+
+
 }

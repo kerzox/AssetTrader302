@@ -1,6 +1,7 @@
 package client;
 
 import util.NetworkUtils;
+import util.Request;
 
 import javax.swing.*;
 import java.awt.*;
@@ -105,25 +106,29 @@ public class LoginFrame extends JFrame implements ActionListener {
         container.add(userBtn, gbc);
     }
 
+    public void loginSuccessful() {
+        String userNameText = userTextField.getText();
+        JOptionPane.showMessageDialog(this, "Login as User");
+        Gui.setSessionUser(userNameText);
+        frame.dispose(); // Close Login Frame
+        Gui.buildUser();
+    }
+
+    public void loginFailed() {
+        JOptionPane.showMessageDialog(this, "Failed Login as User", "Incorrect Login", JOptionPane.ERROR_MESSAGE);
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         String userNameText = userTextField.getText();
         char[] passwordChar = passwordTextField.getPassword();
         String pwdText = new String(passwordChar);
+        String hashedPwdTxt = PasswordHandling.HashString(pwdText);
 
         // User ActionEvent
         if (e.getSource() == userBtn) {
-            if (userNameText.equals("test") && pwdText.equals("pwd")) {
-                JOptionPane.showMessageDialog(this, "Login as User");
-                Gui.setSessionUser(userNameText);
-                frame.dispose(); // Close Login Frame
-                Gui.buildUser();
-
-            }
-            else {
-                JOptionPane.showMessageDialog(this, "Failed Login as User", "Incorrect Login", JOptionPane.ERROR_MESSAGE);
-            }
+            NetworkUtils.write(ClientServer.getServer(), Request.Header.CREATE, Request.Type.CLIENTREQUEST,
+                    "GETUSERLOGIN", userNameText, hashedPwdTxt);
         }
         // Admin ActionEvent
         if (e.getSource() == adminBtn) {

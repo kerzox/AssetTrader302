@@ -3,6 +3,7 @@ package server;
 import util.NetworkUtils;
 import util.Request;
 
+import javax.sound.midi.SysexMessage;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,6 +18,8 @@ public class Main implements Runnable  {
     private static final int CURRENT_PORT = 10000;
     private static final int SOCKET_TIMEOUT = 100;
     private AtomicBoolean running = new AtomicBoolean(true);
+
+    private static Socket CLIENT = null;
 
     private static User test;
     private static User test2;
@@ -74,7 +77,7 @@ public class Main implements Runnable  {
             String msg = "";
 
             do {
-
+                CLIENT = client;
                 List<Object> list = NetworkUtils.read(client);
                 parseClientRequest(list);
 
@@ -85,7 +88,7 @@ public class Main implements Runnable  {
         }
     }
 
-    private void parseClientRequest(List<Object> data) {
+    private void parseClientRequest(List<Object> data) throws IOException {
         if (Arrays.stream(Request.Type.values()).anyMatch(p -> p.equals(data.get(1)))) {
             switch (Request.Type.valueOf(data.get(1).toString())) {
                 case ACCOUNT:
@@ -117,6 +120,19 @@ public class Main implements Runnable  {
                         addOrganisationDB(data);
                     }
                     break;
+                case CLIENTREQUEST:
+                    if (data.get(2).toString().equals("GETUSERLOGIN")) {
+                        String userName = data.get(3).toString();
+                        String hashPwd = data.get(4).toString();
+                        if (database.getAccount(userName) != null && database.getAccount(userName)[2].equals(hashPwd)) {
+                            NetworkUtils.write(CLIENT, Request.Type.SERVERRESPONSE, "LOGIN", 1);
+                        }
+                        else {
+                            NetworkUtils.write(CLIENT, Request.Type.SERVERRESPONSE, "LOGIN", 0);
+                        }
+                    }
+                    break;
+
                 default:
                     //data.forEach(System.out::println);
             }

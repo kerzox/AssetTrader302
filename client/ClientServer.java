@@ -1,10 +1,13 @@
 package client;
 
 import util.NetworkUtils;
+import util.Request;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.List;
 
 public class ClientServer implements Runnable {
 
@@ -19,7 +22,7 @@ public class ClientServer implements Runnable {
         client();
     }
 
-    public static void client() {
+    public void client() {
         try (Socket server = new Socket(HOSTNAME, CURRENT_PORT)) {
             handleInteraction(server);
 
@@ -33,13 +36,20 @@ public class ClientServer implements Runnable {
         }
     }
 
-    public static void handleInteraction(Socket socket) {
+    public void handleInteraction(Socket socket) {
         do {
             SERVER = socket;
+
+            List<Object> list = NetworkUtils.read(SERVER);
+            parseServer(list);
         } while(SERVER.isConnected());
 
         shutdown = true;
 
+    }
+
+    private void parseServer(List<Object> data) {
+        Gui.readServer(data);
     }
 
     public static Socket getServer() {
