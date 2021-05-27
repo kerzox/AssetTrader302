@@ -12,8 +12,9 @@ import static util.Request.Type.ACCOUNT;
 
 public class AccountPanel extends JPanel implements ActionListener {
 
-    private String currentOrganisation = "HARDCODED";
-    private String currentCredits = "HARDCODED";
+    private String currentOrganisation;
+    private String currentCredits;
+    private String userName;
 
     private GridBagLayout gblMain = new GridBagLayout();
     private GridBagConstraints gbcMain = new GridBagConstraints();
@@ -43,7 +44,10 @@ public class AccountPanel extends JPanel implements ActionListener {
     /**
      * Constructor
      */
-    public AccountPanel() {
+    public AccountPanel(String user, String organisation, String budget) {
+        this.userName = user;
+        this.currentOrganisation = organisation;
+        this.currentCredits = budget;
         buildMainPanel();
         addBtnAction();
     }
@@ -105,7 +109,7 @@ public class AccountPanel extends JPanel implements ActionListener {
         gbcGrid1.gridwidth = 2;
         gbcGrid1.gridx = 1;
         gbcGrid1.gridy = 0;
-        JLabel currentUserLabel = buildLabel(Gui.getSessionUser());
+        JLabel currentUserLabel = buildLabel(userName);
         currentUserLabel.setFont(plainFont);
         panelGrid1.add(currentUserLabel, gbcGrid1);
 

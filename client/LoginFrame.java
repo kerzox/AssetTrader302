@@ -128,7 +128,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         // User ActionEvent
         if (e.getSource() == userBtn) {
             NetworkUtils.write(ClientServer.getServer(), Request.Header.CREATE, Request.Type.CLIENTREQUEST,
-                    "GETUSERLOGIN", userNameText, hashedPwdTxt);
+                    "GET_USER_LOGIN", userNameText, hashedPwdTxt);
         }
         // Admin ActionEvent
         if (e.getSource() == adminBtn) {

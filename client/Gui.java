@@ -1,5 +1,7 @@
 package client;
 
+import server.User;
+
 import javax.swing.*;
 import java.util.List;
 
@@ -12,6 +14,8 @@ public class Gui implements Runnable {
     public static void setSessionUser(String value) { ClientUser = value; }
 
     public static LoginFrame login;
+    public static UserFrame user;
+    public static AdminFrame admin;
 
     @Override
     public void run() {
@@ -23,24 +27,31 @@ public class Gui implements Runnable {
         }); // Execute Runnable on AWT thread
 
 
-        // USER LOGIN: test, pwd
+        // USER LOGIN: needs to be created through database in Admin Panel
         // ADMIN LOGIN: root, secret
     }
 
-    public static void buildUser() { UserFrame userFrame = new UserFrame(); }
+    public static void buildUser() { user = new UserFrame(); }
 
-    public static void buildAdmin() {
-        AdminFrame adminFrame = new AdminFrame();
-    }
+    public static void buildAdmin() { admin = new AdminFrame(); }
 
     public static void readServer(List<Object> data) {
-        if (data.get(1).toString().equals("LOGIN")) {
+        String arg = data.get(1).toString();
+        if (arg.equals("LOGIN")) {
             int status = (int) data.get(2);
             if (status == 1) {
                 login.loginSuccessful();
             }
             else if (status == 0) {
                 login.loginFailed();
+            }
+        }
+        else if (arg.equals("INFO_RESPONSE")) {
+            if (data.get(2).toString().equals("UserFrame")) {
+                String userString = data.get(3).toString();
+                String organisationString = data.get(4).toString();
+                String budgetString = data.get(5).toString();
+                user.setServerResponse(userString, organisationString, budgetString);
             }
         }
     }

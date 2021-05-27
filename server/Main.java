@@ -121,7 +121,8 @@ public class Main implements Runnable  {
                     }
                     break;
                 case CLIENTREQUEST:
-                    if (data.get(2).toString().equals("GETUSERLOGIN")) {
+                    String arg = data.get(2).toString();
+                    if (arg.equals("GET_USER_LOGIN")) {
                         String userName = data.get(3).toString();
                         String hashPwd = data.get(4).toString();
                         if (database.getAccount(userName) != null && database.getAccount(userName)[2].equals(hashPwd)) {
@@ -130,6 +131,15 @@ public class Main implements Runnable  {
                         else {
                             NetworkUtils.write(CLIENT, Request.Type.SERVERRESPONSE, "LOGIN", 0);
                         }
+                    }
+                    else if (arg.equals("GET_ORG_INFO")) {
+                        String requestSource = data.get(3).toString();
+                        String userName = data.get(4).toString();
+                        String organisation = database.getAccount(userName)[3];
+                        String budget = database.getOrganisation(organisation)[2];
+                        NetworkUtils.write(CLIENT, Request.Type.SERVERRESPONSE, "INFO_RESPONSE", requestSource,
+                                userName, organisation, budget);
+
                     }
                     break;
 
@@ -234,8 +244,6 @@ public class Main implements Runnable  {
             if (listType == Listing.enumType.BUY) {
                 int totalCost = Integer.parseInt(listingPrice) * Integer.parseInt(listingQuantity);
                 if (totalCost <= Integer.parseInt(budget)) { // Less than budget
-                    System.out.println(Integer.parseInt(budget));
-                    System.out.println(totalCost);
                     database.addListing(new Listing(
                             uuid,
                             listType,

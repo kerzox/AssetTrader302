@@ -1,5 +1,8 @@
 package client;
 
+import util.NetworkUtils;
+import util.Request;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -17,9 +20,9 @@ public class UserFrame extends JFrame implements ActionListener {
     private JPanel panelCont = new JPanel();
     private JPanel panelSide = new JPanel();
     private JPanel panelMain = new JPanel();
-    private JPanel panelCard1 = new AccountPanel();
-    private JPanel panelCard2 = new BuySellPanel();
-    private JPanel panelCard3 = new ListingsPanel();
+    private AccountPanel accountPanel;
+    private BuySellPanel buysellPanel = new BuySellPanel();
+    private ListingsPanel listingsPanel = new ListingsPanel();
 
     private JButton button1 = new JButton("Account");
     private JButton button2 = new JButton("Buy / Sell");
@@ -28,10 +31,24 @@ public class UserFrame extends JFrame implements ActionListener {
     private Color panelColor = new Color(240, 240, 240);
     private Color sideColor = new Color(205, 205, 205);
 
+    private String user = Gui.getSessionUser();
+    private String organisation;
+    private String budget;
+
     /**
      * Constructor of UserFrame
      */
     public UserFrame() {
+        sendServerRequests();
+    }
+
+    public void setServerResponse(String user, String organisation, String budget) {
+        this.user = user;
+        this.organisation = organisation;
+        this.budget = budget;
+
+        accountPanel =  new AccountPanel(user, organisation, budget);
+
         buildFrame();
         addBtnAction();
 
@@ -41,6 +58,11 @@ public class UserFrame extends JFrame implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Terminate program on closure
         frame.setLocationRelativeTo(null); // Centers GUI on open
         frame.setVisible(true);
+    }
+
+    private void sendServerRequests() {
+        NetworkUtils.write(ClientServer.getServer(), Request.Header.CREATE, Request.Type.CLIENTREQUEST,
+                "GET_ORG_INFO", "UserFrame", user);
     }
 
     /**
@@ -60,9 +82,9 @@ public class UserFrame extends JFrame implements ActionListener {
         panelMain.setBackground(panelColor);
         panelMain.setPreferredSize(new Dimension(850, 500));
         panelMain.setLayout(clPanelMain);
-        panelMain.add(panelCard1, "panel1");
-        panelMain.add(panelCard2, "panel2");
-        panelMain.add(panelCard3, "panel3");
+        panelMain.add(accountPanel, "panel1");
+        panelMain.add(buysellPanel, "panel2");
+        panelMain.add(listingsPanel, "panel3");
         clPanelMain.show(panelMain, "panel1");
 
         panelCont.setLayout(gblPanelCont);
