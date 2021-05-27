@@ -106,11 +106,7 @@ public class Main implements Runnable  {
 
                     }
                     if (Request.Header.valueOf(data.get(0).toString()) == CREATE) {
-                        if (Listing.enumType.valueOf(data.get(2).toString()) == Listing.enumType.BUY) {
-                            addListing(data);
-                        } else {
-                           // data.forEach(System.out::println);
-                        }
+                        addListingDB(data);
                     }
                     break;
                 case ORGANISATION:
@@ -207,21 +203,23 @@ public class Main implements Runnable  {
      * Adds listing to database
      * @param data
      */
-    private void addListing(List<Object> data) {
-        data.forEach(System.out::println);
+    private void addListingDB(List<Object> data) {
         String listingType = data.get(2).toString();
         String listingAsset = data.get(3).toString();
         String listingQuantity = data.get(4).toString();
         String listingPrice = data.get(5).toString();
         String listingUser = data.get(6).toString();
 
-        if (database.getAccount(listingUser) != null && database.getAccount(listingAsset) != null) {
+        if (database.getAccount(listingUser) != null && database.getAsset(listingAsset) != null) {
             String listingOrganisation = database.getAccount(listingUser)[3];
             String budget = database.getOrganisation(listingOrganisation)[2];
             UUID uuid = UUID.randomUUID();
             Listing.enumType listType = Listing.enumType.valueOf(listingType);
             if (listType == Listing.enumType.BUY) {
-                if (Integer.parseInt(listingPrice) <= Integer.parseInt(budget)) { // Less than budget
+                int totalCost = Integer.parseInt(listingPrice) * Integer.parseInt(listingQuantity);
+                if (totalCost <= Integer.parseInt(budget)) { // Less than budget
+                    System.out.println(Integer.parseInt(budget));
+                    System.out.println(totalCost);
                     database.addListing(new Listing(
                             uuid,
                             listType,
@@ -230,6 +228,10 @@ public class Main implements Runnable  {
                             listingUser,
                             listingOrganisation,
                             listingAsset
+                    ));
+                    database.updateOrganisation(new Organisation(
+                            listingOrganisation,
+                            (0-totalCost)
                     ));
                 }
                 else {
