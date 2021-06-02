@@ -14,7 +14,19 @@ public class User {
      * @param password password for account
      * @param unit unit organisation
      */
-    public User(String username, String password, Organisation unit) {
+    public User(String username, String password, Organisation unit) throws TextInputException{
+        if (username.contains(" ")) {
+            throw new TextInputException("Username cannot contain whitespace");
+        }
+        if (password.contains(" ")) {
+            throw new TextInputException("Password cannot contain whitespace");
+        }
+        if (username.length() < 1 || username.length() > 30) {
+            throw new TextInputException("Username must be between 1 and 30 characters");
+        }
+        if (password.length() < 1 || password.length() > 30) {
+            throw new TextInputException("Password must be between 1 and 30 characters");
+        }
         this.username = username;
         this.password = password;
         this.unit = unit;
@@ -29,32 +41,12 @@ public class User {
     }
 
     /**
-     *
-     * @param username to set
-     */
-    public void setUsername(String username) { this.username = username; }
-
-    /**
-     * Changes user's password to specified.
-     * @param username
-     */
-    public void changeUsername(String username) {
-        this.username = username;
-    }
-
-    /**
      * Get user's salted and hashed password
      * @return String
      */
     public String getPassword() {
         return password;
     }
-
-    /**
-     *
-     * @param password to set
-     */
-    public void setPassword(String password) { this.password = password; }
 
     /**
      * Changes user's password to specified.
@@ -70,25 +62,6 @@ public class User {
      */
     public String getUnitName() {  return unit.getName(); }
 
-    /**
-     * Get organisation user is from
-     * @return Unit name
-     */
-    public Organisation getUnit() {  return unit; }
-
-    /**
-     *
-     * @param unit to set
-     */
-    public void setUnit(Organisation unit) { this.unit = unit; }
-
-    /**
-     * Changes user's organisation to specified.
-     * @param unit
-     */
-    public void changeUnit(Organisation unit) {
-        this.unit = unit;
-    }
 
 
 
