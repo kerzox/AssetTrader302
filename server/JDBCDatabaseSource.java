@@ -1,6 +1,8 @@
 package server;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JDBCDatabaseSource {
 
@@ -61,6 +63,8 @@ public class JDBCDatabaseSource {
                                                 "unitName!=? AND assetName=? AND assetPrice<=?;";
     private static final String GET_LISTING_SELL = "SELECT * from listing WHERE listingActive=1 AND listingType!=? AND " +
                                                 "unitName!=? AND assetName=? AND assetPrice>=?;";
+    private static final String GET_LISTING_USER = "SELECT * from listing WHERE userName=?;";
+    private static final String GET_LISTING_ALL = "SELECT * from listing;";
     private static final String UPDATE_LISTING = "UPDATE listing SET assetQuantity=? WHERE listingID=?;";
     private static final String CLOSE_LISTING = "UPDATE listing SET listingActive=0 WHERE listingID=?;";
 
@@ -78,8 +82,10 @@ public class JDBCDatabaseSource {
     private PreparedStatement getListing;
     private PreparedStatement getListingBuy;
     private PreparedStatement getListingSell;
+    private PreparedStatement getListingAll;
     private PreparedStatement updateListing;
     private PreparedStatement closeListing;
+    private PreparedStatement getUserListing;
 
     /**
      * Constructor, constructs Database instance
@@ -108,6 +114,8 @@ public class JDBCDatabaseSource {
             getListingSell = connection.prepareStatement(GET_LISTING_SELL, ResultSet.TYPE_SCROLL_INSENSITIVE);
             updateListing = connection.prepareStatement(UPDATE_LISTING);
             closeListing = connection.prepareStatement(CLOSE_LISTING);
+            getUserListing = connection.prepareStatement(GET_LISTING_USER, ResultSet.TYPE_SCROLL_INSENSITIVE);
+            getListingAll = connection.prepareStatement(GET_LISTING_ALL, ResultSet.TYPE_SCROLL_INSENSITIVE);
 
         } catch (SQLException SQLex) {
             System.err.println(SQLex);
@@ -355,6 +363,73 @@ public class JDBCDatabaseSource {
             System.err.println(SQLex);
         }
 
+    }
+
+    public String[][] getUserListing(String username) {
+        ResultSet rs;
+        String[][] listings;
+        int nCol;
+        List<String[]> listArr = new ArrayList<>();
+        try {
+            getUserListing.setString(1, username);
+            rs = getUserListing.executeQuery();
+
+            nCol = rs.getMetaData().getColumnCount(); // Adapted from https://stackoverflow.com/questions/24547406/resultset-into-2d-array
+
+            while( rs.next() ) {
+                String[] row = new String[nCol];
+                for (int i = 1; i <= nCol; i++) {
+                    String str = rs.getString(i);
+                    row[i-1] = str;
+                }
+                listArr.add( row );
+            }
+
+            listings = new String[listArr.size()][];
+            for (int j = 0; j < listArr.size(); j++) {
+                String[] row = listArr.get(j);
+                listings[j] = row;
+            }
+
+            return listings;
+
+        } catch (SQLException SQLex) {
+            SQLex.printStackTrace();
+        }
+        return null;
+    }
+
+    public String[][] getAllListings() {
+        ResultSet rs;
+        String[][] listings;
+        int nCol;
+        List<String[]> listArr = new ArrayList<>();
+        try {
+            rs = getListingAll.executeQuery();
+
+            nCol = rs.getMetaData().getColumnCount(); // Adapted from https://stackoverflow.com/questions/24547406/resultset-into-2d-array
+
+            while( rs.next() ) {
+                String[] row = new String[nCol];
+                for (int i = 1; i <= nCol; i++) {
+                    String str = rs.getString(i);
+                    row[i-1] = str;
+                }
+                listArr.add( row );
+            }
+
+            listings = new String[listArr.size()][];
+            for (int j = 0; j < listArr.size(); j++) {
+                String[] row = listArr.get(j);
+                listings[j] = row;
+            }
+
+            return listings;
+
+        } catch (SQLException SQLex) {
+            SQLex.printStackTrace();
+        }
+        return null;
     }
 
     /**

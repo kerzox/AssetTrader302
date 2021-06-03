@@ -21,8 +21,8 @@ public class UserFrame extends JFrame implements ActionListener {
     private JPanel panelSide = new JPanel();
     private JPanel panelMain = new JPanel();
     private AccountPanel accountPanel;
-    private BuySellPanel buysellPanel = new BuySellPanel();
-    private ListingsPanel listingsPanel = new ListingsPanel();
+    private BuySellPanel buysellPanel;
+    private ListingsPanel listingsPanel;
 
     private JButton button1 = new JButton("Account");
     private JButton button2 = new JButton("Buy / Sell");
@@ -34,6 +34,8 @@ public class UserFrame extends JFrame implements ActionListener {
     private String user = Gui.getSessionUser();
     private String organisation;
     private String budget;
+    private String[][] userListings;
+    private String[][] allListings;
 
     /**
      * Constructor of UserFrame
@@ -42,12 +44,16 @@ public class UserFrame extends JFrame implements ActionListener {
         sendServerRequests();
     }
 
-    public void setServerResponse(String user, String organisation, String budget) {
+    public void setServerResponse(String user, String organisation, String budget, String[][] userListings, String[][] allListings) {
         this.user = user;
         this.organisation = organisation;
         this.budget = budget;
+        this.userListings = userListings;
+        this.allListings = allListings;
 
-        accountPanel =  new AccountPanel(user, organisation, budget);
+        accountPanel =  new AccountPanel(user, organisation, budget, userListings);
+        buysellPanel = new BuySellPanel();
+        listingsPanel =  new ListingsPanel(allListings);
 
         buildFrame();
         addBtnAction();

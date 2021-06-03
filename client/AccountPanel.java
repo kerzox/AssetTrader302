@@ -15,6 +15,7 @@ public class AccountPanel extends JPanel implements ActionListener {
     private String currentOrganisation;
     private String currentCredits;
     private String userName;
+    private String[][] userListings;
 
     private GridBagLayout gblMain = new GridBagLayout();
     private GridBagConstraints gbcMain = new GridBagConstraints();
@@ -44,10 +45,11 @@ public class AccountPanel extends JPanel implements ActionListener {
     /**
      * Constructor
      */
-    public AccountPanel(String user, String organisation, String budget) {
+    public AccountPanel(String user, String organisation, String budget, String[][] userListings) {
         this.userName = user;
         this.currentOrganisation = organisation;
         this.currentCredits = budget;
+        this.userListings = userListings;
         buildMainPanel();
         addBtnAction();
     }
@@ -222,25 +224,7 @@ public class AccountPanel extends JPanel implements ActionListener {
      * @return listings
      */
     private String[][] buildListings() {
-        String listings[][] = {
-                {"1", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"2", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"3", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"4", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"5", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"6", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"7", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"8", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"9", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"10", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"11", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"12", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"13", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"14", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"15", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"16", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"17", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-        };
+        String[][] listings = userListings;
 
         return listings;
     }
@@ -250,7 +234,7 @@ public class AccountPanel extends JPanel implements ActionListener {
      * @return table
      */
     private JTable buildTable(String[][] data) {
-        String[] columns = {"ID", "TYPE", "STATUS", "USER", "UNIT",
+        String[] columns = {"ID", "STATUS", "TYPE", "USER", "UNIT",
                             "ASSET", "QUANTITY", "PRICE", "DATE"};
         JTable table = new JTable(data, columns);
         return table;

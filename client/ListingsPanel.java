@@ -5,6 +5,8 @@ import java.awt.*;
 
 public class ListingsPanel extends JPanel {
 
+    private String[][] listings;
+
     private GridBagLayout gblMain = new GridBagLayout();
     private GridBagConstraints gbcMain = new GridBagConstraints();
     private GridBagLayout gblGrid1 = new GridBagLayout();
@@ -20,7 +22,9 @@ public class ListingsPanel extends JPanel {
     private Font boldFont = new Font("Dialog", Font.BOLD, 12);
     private Font plainFont = new Font("Dialog", Font.PLAIN, 12);
 
-    public ListingsPanel() {
+    public ListingsPanel(String[][] listings) {
+        this.listings = listings;
+
         buildGrid1();
 
         setLayout(gblMain);
@@ -95,26 +99,6 @@ public class ListingsPanel extends JPanel {
      * @return listings
      */
     private String[][] buildListings() {
-        String listings[][] = {
-                {"1", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"2", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"3", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"4", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"5", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"6", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"7", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"8", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"9", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"10", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"11", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"12", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"13", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"14", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"15", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"16", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-                {"17", "OPEN", "BUY", "username", "organisation", "asset", "12", "10", "DATE"},
-        };
-
         return listings;
     }
 
