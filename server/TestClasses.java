@@ -81,9 +81,6 @@ public class TestClasses {
         assertThrows(TextInputException.class, () -> {
             u1 = new User("12345678901234567890123456789012345", "pwd", o1);
         });
-        assertThrows(TextInputException.class, () -> {
-            u1 = new User("uname", "12345678901234567890123456789012345", o1);
-        });
         u1 = new User("user1", "pwd", o1);
         assertEquals("user1", u1.getUsername());
         assertEquals("pwd", u1.getPassword());
@@ -91,9 +88,6 @@ public class TestClasses {
         // Boundary Classes
         assertThrows(TextInputException.class, () -> {
             u1 = new User("1234567890123456789012345678901", "pwd", o1);
-        });
-        assertThrows(TextInputException.class, () -> {
-            u1 = new User("uname", "1234567890123456789012345678901", o1);
         });
         assertThrows(TextInputException.class, () -> {
             u1 = new User("", "pwd", o1);

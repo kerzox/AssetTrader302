@@ -105,9 +105,6 @@ public class Main implements Runnable  {
                     }
                     break;
                 case LISTING:
-                    if (Request.Header.valueOf(data.get(0).toString()) == ALTER) {
-
-                    }
                     if (Request.Header.valueOf(data.get(0).toString()) == CREATE) {
                         addListingDB(data);
                     }
@@ -166,9 +163,8 @@ public class Main implements Runnable  {
         String unitName = (String) data.get(2);
         if (database.getOrganisation(unitName) != null) {
             database.updateOrganisation(new Organisation(
-                    (String) data.get(2),
-                    Integer.parseInt((String) data.get(3))
-            ));
+                    (String) data.get(2)
+            ), Integer.parseInt((String) data.get(3)));
         }
         else {
             System.out.println("Failed to edit budget");
@@ -241,38 +237,33 @@ public class Main implements Runnable  {
             String budget = database.getOrganisation(listingOrganisation)[2];
             UUID uuid = UUID.randomUUID();
             Listing.enumType listType = Listing.enumType.valueOf(listingType);
+            Listing a = new Listing(
+                    uuid,
+                    listType,
+                    Integer.parseInt(listingQuantity),
+                    Integer.parseInt(listingPrice),
+                    listingUser,
+                    listingOrganisation,
+                    listingAsset
+            );
             if (listType == Listing.enumType.BUY) {
                 int totalCost = Integer.parseInt(listingPrice) * Integer.parseInt(listingQuantity);
                 if (totalCost <= Integer.parseInt(budget)) { // Less than budget
-                    database.addListing(new Listing(
-                            uuid,
-                            listType,
-                            Integer.parseInt(listingQuantity),
-                            Integer.parseInt(listingPrice),
-                            listingUser,
-                            listingOrganisation,
-                            listingAsset
-                    ));
+                    database.addListing(a);
                     database.updateOrganisation(new Organisation(
-                            listingOrganisation,
-                            (0-totalCost)
-                    ));
+                            listingOrganisation
+                    ), (0-totalCost));
                 }
                 else {
+
                     System.out.println("Not enough budget");
+                    NetworkUtils.write(CLIENT, Request.Type.SERVERRESPONSE, "LISTING", "FAILED_ADD", "Not enough budget");
                 }
             }
             else {
-                database.addListing(new Listing(
-                        uuid,
-                        listType,
-                        Integer.parseInt(listingQuantity),
-                        Integer.parseInt(listingPrice),
-                        listingUser,
-                        listingOrganisation,
-                        listingAsset
-                ));
+                database.addListing(a);
             }
+            database.resolveListings(a);
         }
         else {
             System.out.println("Failed to add listing");

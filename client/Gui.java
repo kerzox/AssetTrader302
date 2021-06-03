@@ -37,22 +37,28 @@ public class Gui implements Runnable {
 
     public static void readServer(List<Object> data) {
         String arg = data.get(1).toString();
-        if (arg.equals("LOGIN")) {
-            int status = (int) data.get(2);
-            if (status == 1) {
-                login.loginSuccessful();
-            }
-            else if (status == 0) {
-                login.loginFailed();
-            }
-        }
-        else if (arg.equals("INFO_RESPONSE")) {
-            if (data.get(2).toString().equals("UserFrame")) {
-                String userString = data.get(3).toString();
-                String organisationString = data.get(4).toString();
-                String budgetString = data.get(5).toString();
-                user.setServerResponse(userString, organisationString, budgetString);
-            }
+        switch(arg) {
+            case "LOGIN":
+                int status = (int) data.get(2);
+                if (status == 1) {
+                    login.loginSuccessful();
+                }
+                else if (status == 0) {
+                    login.loginFailed();
+                }
+                break;
+            case "INFO_RESPONSE":
+                if (data.get(2).toString().equals("UserFrame")) {
+                    String userString = data.get(3).toString();
+                    String organisationString = data.get(4).toString();
+                    String budgetString = data.get(5).toString();
+                    user.setServerResponse(userString, organisationString, budgetString);
+                }
+                break;
+            case "LISTING":
+                if (data.get(2).toString().equals("FAILED_ADD")) {
+                    user.notification(data.get(3).toString());
+                }
         }
     }
 

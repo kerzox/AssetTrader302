@@ -60,6 +60,10 @@ public class UserFrame extends JFrame implements ActionListener {
         frame.setVisible(true);
     }
 
+    public void notification(String data) {
+        JOptionPane.showMessageDialog(this, data, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
     private void sendServerRequests() {
         NetworkUtils.write(ClientServer.getServer(), Request.Header.CREATE, Request.Type.CLIENTREQUEST,
                 "GET_ORG_INFO", "UserFrame", user);

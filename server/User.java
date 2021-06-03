@@ -24,8 +24,8 @@ public class User {
         if (username.length() < 1 || username.length() > 30) {
             throw new TextInputException("Username must be between 1 and 30 characters");
         }
-        if (password.length() < 1 || password.length() > 30) {
-            throw new TextInputException("Password must be between 1 and 30 characters");
+        if (password.length() < 1) {
+            throw new TextInputException("Password cannot be empty!");
         }
         this.username = username;
         this.password = password;
