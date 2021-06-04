@@ -9,10 +9,11 @@ public class User {
     private Organisation unit;
 
     /**
-     * User constructor
-     * @param username username for account
-     * @param password password for account
-     * @param unit unit organisation
+     * Constructor for user
+     * @param username
+     * @param password
+     * @param unit
+     * @throws TextInputException if input contains whitespace or does not fit constraints
      */
     public User(String username, String password, Organisation unit) throws TextInputException{
         if (username.contains(" ")) {

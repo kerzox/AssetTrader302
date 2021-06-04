@@ -5,12 +5,11 @@ public class Asset {
     private final String name;
 
     /**
-     * Constructor
-     * @param name sets name of Asset
+     * Constructor of Asset object
+     * @param name name of asset
      */
     public Asset(String name) {
         this.name = name;
-        DatabaseHelper.addAsset(this);
     }
 
     /**

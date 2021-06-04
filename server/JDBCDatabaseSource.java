@@ -230,6 +230,11 @@ public class JDBCDatabaseSource {
         }
     }
 
+    /**
+     * Adds credits to budget of organisation
+     * @param unit
+     * @param credits
+     */
     public void awardCredits(String unit, int credits) {
         try {
             String[] org = getOrganisation(unit);
@@ -315,6 +320,10 @@ public class JDBCDatabaseSource {
         return null;
     }
 
+    /**
+     * Gets all assets from the database
+     * @return string array of all assets else null
+     */
     public String[] getAllAssets() {
         List<String> list = new ArrayList<>();
         String[] assets;
@@ -364,7 +373,7 @@ public class JDBCDatabaseSource {
     }
 
     /**
-     * Updates listing in databse
+     * Updates listing in database
      * @param uuid
      * @param quantity
      */
@@ -393,6 +402,11 @@ public class JDBCDatabaseSource {
 
     }
 
+    /**
+     * Gets all listings belonging to a user
+     * @param username
+     * @return 2d string array of userListings else null
+     */
     public String[][] getUserListing(String username) {
         ResultSet rs;
         String[][] listings;
@@ -427,6 +441,10 @@ public class JDBCDatabaseSource {
         return null;
     }
 
+    /**
+     * Gets all listings from database
+     * @return 2d string array of all listings else null
+     */
     public String[][] getAllListings() {
         ResultSet rs;
         String[][] listings;

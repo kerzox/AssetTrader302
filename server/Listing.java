@@ -31,12 +31,13 @@ public class Listing {
     }
 
     /**
-     * Constructor
+     * Constructor of listing object
      * @param uuid
      * @param type
      * @param assetQuantity
      * @param assetPrice
      * @param user
+     * @param organisation
      * @param asset
      */
     public Listing(UUID uuid, enumType type, int assetQuantity, int assetPrice, String user, String organisation, String asset) {
