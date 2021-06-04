@@ -136,8 +136,9 @@ public class Main implements Runnable  {
                         String budget = database.getOrganisation(organisation)[2];
                         String[][] userListings = database.getUserListing(userName);
                         String[][] allListings = database.getAllListings();
+                        String[] assets = database.getAllAssets();
                         NetworkUtils.write(CLIENT, Request.Type.SERVERRESPONSE, "INFO_RESPONSE", requestSource,
-                                userName, organisation, budget, userListings, allListings);
+                                userName, organisation, budget, userListings, allListings, assets);
 
                     }
                     break;

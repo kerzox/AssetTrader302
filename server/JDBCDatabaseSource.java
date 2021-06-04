@@ -38,6 +38,7 @@ public class JDBCDatabaseSource {
                 + ");";
     private static final String INSERT_ASSET = "INSERT INTO asset (assetName) VALUES (?);";
     private static final String GET_ASSET = "SELECT * from asset WHERE assetName=?;";
+    private static final String GET_ASSET_ALL = "SELECT * from asset;";
 
     private static final String CREATE_TABLE_LISTING =
             "CREATE TABLE IF NOT EXISTS listing ("
@@ -78,6 +79,7 @@ public class JDBCDatabaseSource {
     private PreparedStatement getOrganisation;
     private PreparedStatement addAsset;
     private PreparedStatement getAsset;
+    private PreparedStatement getAssetAll;
     private PreparedStatement addListing;
     private PreparedStatement getListing;
     private PreparedStatement getListingBuy;
@@ -108,6 +110,7 @@ public class JDBCDatabaseSource {
             getOrganisation = connection.prepareStatement(GET_UNIT, ResultSet.TYPE_SCROLL_INSENSITIVE);
             addAsset = connection.prepareStatement(INSERT_ASSET);
             getAsset = connection.prepareStatement(GET_ASSET, ResultSet.TYPE_SCROLL_INSENSITIVE);
+            getAssetAll = connection.prepareStatement(GET_ASSET_ALL, ResultSet.TYPE_SCROLL_INSENSITIVE);
             addListing = connection.prepareStatement(INSERT_LISTING);
             getListing = connection.prepareStatement(GET_LISTING, ResultSet.TYPE_SCROLL_INSENSITIVE);
             getListingBuy = connection.prepareStatement(GET_LISTING_BUY, ResultSet.TYPE_SCROLL_INSENSITIVE);
@@ -309,6 +312,31 @@ public class JDBCDatabaseSource {
         } catch (SQLException SQLex) {
             System.err.println(SQLex);
         }
+        return null;
+    }
+
+    public String[] getAllAssets() {
+        List<String> list = new ArrayList<>();
+        String[] assets;
+        String assetName;
+        ResultSet rs;
+
+        try {
+            rs = getAssetAll.executeQuery();
+
+            while( rs.next() ) {
+                assetName = rs.getString(2);
+                list.add(assetName);
+            }
+
+            assets = new String[list.size()];
+            list.toArray(assets);
+            return assets;
+
+        } catch(SQLException SQLex) {
+            System.err.println(SQLex);
+        }
+
         return null;
     }
 

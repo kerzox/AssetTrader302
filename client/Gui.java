@@ -54,7 +54,8 @@ public class Gui implements Runnable {
                     String budgetString = data.get(5).toString();
                     String[][] userListings = (String[][]) data.get(6);
                     String[][] allListings = (String[][]) data.get(7);
-                    user.setServerResponse(userString, organisationString, budgetString, userListings, allListings);
+                    String[] assets = (String[]) data.get(8);
+                    user.setServerResponse(userString, organisationString, budgetString, userListings, allListings, assets);
                 }
                 break;
             case "LISTING":

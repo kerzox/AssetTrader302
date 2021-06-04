@@ -24,7 +24,7 @@ public class BuySellPanel extends JPanel implements ActionListener {
     private JTextField priceText = new JTextField();
 
     private JComboBox typeCombo = new JComboBox(new String[] {"BUY", "SELL"});
-    private JComboBox assetCombo = new JComboBox(new String[] {"Asset1", "Asset2"});
+    private JComboBox assetCombo;
 
     private JButton postListingBtn = new JButton("Post Listing");
 
@@ -33,7 +33,11 @@ public class BuySellPanel extends JPanel implements ActionListener {
     private Font boldFont = new Font("Dialog", Font.BOLD, 12);
     private Font plainFont = new Font("Dialog", Font.PLAIN, 12);
 
-    public BuySellPanel() {
+    private String[] assets;
+
+    public BuySellPanel(String[] assets) {
+        this.assets = assets;
+        assetCombo = new JComboBox(assets);
         buildGrid1();
         addBtnAction();
 

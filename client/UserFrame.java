@@ -36,6 +36,7 @@ public class UserFrame extends JFrame implements ActionListener {
     private String budget;
     private String[][] userListings;
     private String[][] allListings;
+    private String[] assets;
 
     /**
      * Constructor of UserFrame
@@ -44,15 +45,16 @@ public class UserFrame extends JFrame implements ActionListener {
         sendServerRequests();
     }
 
-    public void setServerResponse(String user, String organisation, String budget, String[][] userListings, String[][] allListings) {
+    public void setServerResponse(String user, String organisation, String budget, String[][] userListings, String[][] allListings, String[] assets) {
         this.user = user;
         this.organisation = organisation;
         this.budget = budget;
         this.userListings = userListings;
         this.allListings = allListings;
+        this.assets = assets;
 
         accountPanel =  new AccountPanel(user, organisation, budget, userListings);
-        buysellPanel = new BuySellPanel();
+        buysellPanel = new BuySellPanel(assets);
         listingsPanel =  new ListingsPanel(allListings);
 
         buildFrame();
