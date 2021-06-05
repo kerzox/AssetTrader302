@@ -79,18 +79,43 @@ public class Main implements Runnable  {
             do {
                 CLIENT = client;
                 List<Object> list = NetworkUtils.read(client);
-                parseClientRequest(list);
 
-            } while (msg == null || !msg.equals("quit"));
+                doRequests(client, list);
+
+            } while (running.get());
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
+    private void doRequests(Socket client, List<Object> request) {
+        try {
+
+            Request.Header command = Request.grabValidHeader(request.get(0).toString());
+            if (command == null) throw new CommandException(request.get(0).toString() + " is invalid as a command.");
+
+            // do non sql command handling
+            if (!Request.Header.isSQLCommand(command)) {
+                if (command == MESSAGE) {
+                    if (request.get(1).toString().contains("quit")) running.set(false);
+                }
+            }
+
+            Request.Type type = Request.grabValidType(request.get(1).toString());
+            if (type == null) throw new CommandException(request.get(1).toString()
+                    + " is an invalid type.");
+
+            parseClientRequest(request);
+
+        } catch (CommandException | IOException e) {
+            NetworkUtils.write(client, e.getMessage());
+            System.out.println(e.getMessage());
+        }
+    }
+
     private void parseClientRequest(List<Object> data) throws IOException {
-        if (Arrays.stream(Request.Type.values()).anyMatch(p -> p.equals(data.get(1)))) {
-            switch (Request.Type.valueOf(data.get(1).toString())) {
+        switch (Request.Type.valueOf(data.get(1).toString())) {
                 case ACCOUNT:
                     if (Request.Header.valueOf(data.get(0).toString()) == ALTER) {
                         editAccountDB(data);
@@ -136,18 +161,17 @@ public class Main implements Runnable  {
                         String budget = database.getOrganisation(organisation)[2];
                         String[][] userListings = database.getUserListing(userName);
                         String[][] allListings = database.getAllListings();
+                        String[] allOrgs = database.getAllOrganisations();
                         String[] assets = database.getAllAssets();
                         NetworkUtils.write(CLIENT, Request.Type.SERVERRESPONSE, "INFO_RESPONSE", requestSource,
-                                userName, organisation, budget, userListings, allListings, assets);
+                                userName, organisation, budget, userListings, allListings, allOrgs, assets);
 
                     }
                     break;
 
                 default:
                     //data.forEach(System.out::println);
-            }
         }
-        //data.forEach(System.out::println);
     }
 
     /**
