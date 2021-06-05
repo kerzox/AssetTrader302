@@ -3,10 +3,12 @@ package server;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TestClasses {
     Organisation o1, o2;
     User u1;
+    Asset a1;
 
     @BeforeEach
     public void initClasses() {
@@ -123,7 +125,41 @@ public class TestClasses {
     public void testNewAsset() {
         // equivalence
 
+        // size of 25
+        a1 = new Asset("alkenylidenecyclopropanes");
+        assertEquals(25, a1.getName().length());
+        assertEquals("alkenylidenecyclopropanes", a1.getName());
+
+        // size of 35
+        assertThrows(TextInputException.class, () -> {
+            a1 = new Asset("hippopotomonstrosesquipedaliophobic");
+        });
 
         // boundary
+
+        // length of 0
+        assertThrows(TextInputException.class, () -> {
+            a1 = new Asset("");
+        });
+
+        // length of 31
+        assertThrows(TextInputException.class, () -> {
+            a1 = new Asset("quinquagintaquadringentillionth");
+        });
+
+        //Whitespaces are invalid
+        assertThrows(TextInputException.class, ()-> {
+            a1 = new Asset("test ");
+        });
+
+        //Symbols are invalid
+        assertThrows(TextInputException.class, ()-> {
+            a1 = new Asset("test!");
+        });
+
+        //Numbers are invalid
+        assertThrows(TextInputException.class, ()-> {
+            a1 = new Asset("test1");
+        });
     }
 }
