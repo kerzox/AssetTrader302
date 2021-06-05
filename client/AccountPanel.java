@@ -3,6 +3,7 @@ package client;
 import util.NetworkUtils;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -41,6 +42,12 @@ public class AccountPanel extends JPanel implements ActionListener {
 
     private Font boldFont = new Font("Dialog", Font.BOLD, 12);
     private Font plainFont = new Font("Dialog", Font.PLAIN, 12);
+    private JTable table;
+
+    String[] columns = {"ID", "STATUS", "TYPE", "USER", "UNIT",
+            "ASSET", "QUANTITY", "PRICE", "DATE"};
+
+    private JLabel currentCreditsLabel;
 
     /**
      * Constructor
@@ -52,6 +59,11 @@ public class AccountPanel extends JPanel implements ActionListener {
         this.userListings = userListings;
         buildMainPanel();
         addBtnAction();
+    }
+
+    public void sendServerInformation(String[][] userListings, String[] allAssets, String budget) {
+       currentCreditsLabel.setText(budget);
+       table.setModel(new UneditableTableModel(userListings, columns));
     }
 
     /**
@@ -163,7 +175,7 @@ public class AccountPanel extends JPanel implements ActionListener {
 
         gbcGrid2.gridx = 1;
         gbcGrid2.gridy = 1;
-        JLabel currentCreditsLabel = buildLabel(currentCredits);
+        currentCreditsLabel = buildLabel(currentCredits);
         currentCreditsLabel.setFont(plainFont);
         panelGrid2.add(currentCreditsLabel, gbcGrid2);
     }
@@ -172,7 +184,7 @@ public class AccountPanel extends JPanel implements ActionListener {
      * Builds grid 3 with components
      */
     private void buildGrid3() {
-        JTable table = buildTable(buildListings());
+        this.table = buildTable(buildListings());
 
         JScrollPane scrollPane = new JScrollPane(table);
 

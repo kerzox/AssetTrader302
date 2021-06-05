@@ -1,6 +1,7 @@
 package client;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class ListingsPanel extends JPanel {
@@ -22,6 +23,10 @@ public class ListingsPanel extends JPanel {
     private Font boldFont = new Font("Dialog", Font.BOLD, 12);
     private Font plainFont = new Font("Dialog", Font.PLAIN, 12);
 
+    private String[] columns = {"ID", "TYPE", "STATUS", "USER", "UNIT",
+            "ASSET", "QUANTITY", "PRICE", "DATE"};
+    private JTable table = new JTable();
+
     public ListingsPanel(String[][] listings) {
         this.listings = listings;
 
@@ -38,6 +43,11 @@ public class ListingsPanel extends JPanel {
         setBackground(Color.BLACK);
     }
 
+
+    public void sendServerInformation(String[][] allListings) {
+        table.setModel(new UneditableTableModel(allListings, columns));
+    }
+
     /**
      * Builds Grid1
      */
@@ -45,7 +55,7 @@ public class ListingsPanel extends JPanel {
         panelGrid1.setBackground(panelColor);
         panelGrid1.setLayout(gblGrid1);
 
-        JTable table = buildTable(buildListings());
+        this.table = buildTable(buildListings());
 
         JScrollPane scrollPane = new JScrollPane(table);
 
@@ -107,9 +117,8 @@ public class ListingsPanel extends JPanel {
      * @return table
      */
     private JTable buildTable(String[][] data) {
-        String[] columns = {"ID", "TYPE", "STATUS", "USER", "UNIT",
-                "ASSET", "QUANTITY", "PRICE", "DATE"};
         JTable table = new JTable(data, columns);
         return table;
     }
+
 }

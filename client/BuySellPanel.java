@@ -52,6 +52,9 @@ public class BuySellPanel extends JPanel implements ActionListener {
         setBackground(Color.BLACK);
     }
 
+    public void sendServerInformation(String[] assets) {
+    }
+
     /**
      * Builds Grid1
      */
@@ -175,6 +178,5 @@ public class BuySellPanel extends JPanel implements ActionListener {
         NetworkUtils.write(ClientServer.getServer(), CREATE, LISTING, listingType,
                 listingAsset, listingQuantity, listingPrice, Gui.getSessionUser());
     }
-
 
 }

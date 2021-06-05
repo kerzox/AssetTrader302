@@ -31,6 +31,8 @@ public class UserFrame extends JFrame implements ActionListener {
     private Color panelColor = new Color(240, 240, 240);
     private Color sideColor = new Color(205, 205, 205);
 
+    private boolean built = false;
+
     private String user = Gui.getSessionUser();
     private String organisation;
     private String budget;
@@ -53,19 +55,26 @@ public class UserFrame extends JFrame implements ActionListener {
         this.allListings = allListings;
         this.assets = assets;
 
-        accountPanel =  new AccountPanel(user, organisation, budget, userListings, assets);
-        buysellPanel = new BuySellPanel(assets);
-        listingsPanel =  new ListingsPanel(allListings);
+        if (!built) {
+            built = true;
+            accountPanel =  new AccountPanel(user, organisation, budget, userListings, assets);
+            buysellPanel = new BuySellPanel(assets);
+            listingsPanel =  new ListingsPanel(allListings);
 
-        buildFrame();
-        addBtnAction();
+            buildFrame();
+            addBtnAction();
 
-        frame.add(panelCont);
-        frame.pack(); // Leave size management to layout manager -- CardLayout
-        frame.setTitle("AssetTrader302");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Terminate program on closure
-        frame.setLocationRelativeTo(null); // Centers GUI on open
-        frame.setVisible(true);
+            frame.add(panelCont);
+            frame.pack(); // Leave size management to layout manager -- CardLayout
+            frame.setTitle("AssetTrader302");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Terminate program on closure
+            frame.setLocationRelativeTo(null); // Centers GUI on open
+            frame.setVisible(true);
+        }
+
+        accountPanel.sendServerInformation(userListings, assets, budget);
+        buysellPanel.sendServerInformation(assets);
+        listingsPanel.sendServerInformation(allListings);
     }
 
     public void notification(String data) {
@@ -127,5 +136,6 @@ public class UserFrame extends JFrame implements ActionListener {
         if (e.getSource() == button3) {
             clPanelMain.show(panelMain, "panel3");
         }
+        sendServerRequests();
     }
 }

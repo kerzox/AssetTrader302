@@ -74,8 +74,6 @@ public class AdminFrame extends JFrame implements ActionListener {
 
     private String admin = Gui.getSessionUser();
     private boolean built = false;
-    private DefaultComboBoxModel boxModel = new DefaultComboBoxModel();
-
 
     /**
      * Constructor of UserFrame
@@ -96,19 +94,17 @@ public class AdminFrame extends JFrame implements ActionListener {
 
     }
     private void refreshUsers() {
-        this.boxModel = new DefaultComboBoxModel(this.allUserNames.toArray());
         this.editUsernameCombo.removeAllItems();
-        this.editUsernameCombo.setModel(boxModel);
+        this.editUsernameCombo.setModel(new DefaultComboBoxModel(this.allUserNames.toArray()));
     }
 
     private void refreshOrganisationDropDowns() {
-        this.boxModel = new DefaultComboBoxModel(this.allOrganisations);
         this.newOrganisationCombo.removeAllItems();
         this.editOrganisationCombo.removeAllItems();
         this.creditsOrganisationCombo.removeAllItems();
-        this.newOrganisationCombo.setModel(boxModel);
-        this.editOrganisationCombo.setModel(boxModel);
-        this.creditsOrganisationCombo.setModel(boxModel);
+        this.newOrganisationCombo.setModel(new DefaultComboBoxModel(this.allOrganisations));
+        this.editOrganisationCombo.setModel(new DefaultComboBoxModel(this.allOrganisations));
+        this.creditsOrganisationCombo.setModel(new DefaultComboBoxModel(this.allOrganisations));
     }
 
     private void doBuild(){
