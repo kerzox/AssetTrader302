@@ -9,23 +9,18 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Vector;
 
 import static util.Request.Header.*;
 import static util.Request.Type.*;
 
 public class AdminFrame extends JFrame implements ActionListener {
 
-    /**
-     * DUMMY ARRAY OF OBJECTS
-     */
-
     private String[] allOrganisations;
-    private String[][] allAccounts;
-    private String[] allUserNames;
-
-    private String[] dummyUnits = {"unit1", "unit2", "unit3"};
-    private String[] dummyUsers = {"user1", "user2", "user3"};
+    private String[][] allAccounts; // if we want to know all account information
+    private final List<String> allUserNames = new ArrayList<>();
 
     private GridBagLayout gblPanelCont = new GridBagLayout();
     private GridBagLayout gblPanelMain = new GridBagLayout();
@@ -78,6 +73,9 @@ public class AdminFrame extends JFrame implements ActionListener {
     private Color sideColor = new Color(205, 205, 205);
 
     private String admin = Gui.getSessionUser();
+    private boolean built = false;
+    private DefaultComboBoxModel boxModel = new DefaultComboBoxModel();
+
 
     /**
      * Constructor of UserFrame
@@ -87,16 +85,39 @@ public class AdminFrame extends JFrame implements ActionListener {
     }
 
     public void setServerResponse(String[] allOrganisations, String[][] allAccountData) {
+        this.allUserNames.clear();
+        Arrays.stream(allOrganisations).forEach(s -> System.out.println(s));
         this.allOrganisations = allOrganisations;
         this.allAccounts = allAccountData;
-        List<String> username = new ArrayList<>();
-        for (String[] user : allAccountData) {
-            username.add(user[1]);
-        }
-        this.editUsernameCombo = new JComboBox(username.toArray());
-        this.newOrganisationCombo = new JComboBox(allOrganisations);
-        this.editOrganisationCombo = new JComboBox(allOrganisations);
-        this.creditsOrganisationCombo = new JComboBox(allOrganisations);
+        Arrays.stream(allAccounts).forEach(s -> this.allUserNames.add(s[1]));
+        if (!built) doBuild();
+        refreshOrganisationDropDowns();
+        refreshUsers();
+
+    }
+    private void refreshUsers() {
+        this.boxModel = new DefaultComboBoxModel(this.allUserNames.toArray());
+        this.editUsernameCombo.removeAllItems();
+        this.editUsernameCombo.setModel(boxModel);
+    }
+
+    private void refreshOrganisationDropDowns() {
+        this.boxModel = new DefaultComboBoxModel(this.allOrganisations);
+        this.newOrganisationCombo.removeAllItems();
+        this.editOrganisationCombo.removeAllItems();
+        this.creditsOrganisationCombo.removeAllItems();
+        this.newOrganisationCombo.setModel(boxModel);
+        this.editOrganisationCombo.setModel(boxModel);
+        this.creditsOrganisationCombo.setModel(boxModel);
+    }
+
+    private void doBuild(){
+        built = true;
+
+        this.editUsernameCombo = new JComboBox();
+        this.newOrganisationCombo = new JComboBox();
+        this.editOrganisationCombo = new JComboBox();
+        this.creditsOrganisationCombo = new JComboBox();
 
         buildFrame();
         addBtnAction();
@@ -520,6 +541,7 @@ public class AdminFrame extends JFrame implements ActionListener {
             if (e.getSource() == newOrganisationBtn) {
                 createOrganisation();
             }
+            getServerInformation();
         } catch (TextInputException tiex) {
             JOptionPane.showMessageDialog(this, tiex, "Error", JOptionPane.ERROR_MESSAGE);
         } catch (NumberFormatException nfex) {
@@ -599,7 +621,7 @@ public class AdminFrame extends JFrame implements ActionListener {
         System.out.println("ADDING --- Username: " + userNameText + " Password: " + hashedPwdTxt + " Organisation: " + organisationText);
 
         NetworkUtils.write(ClientServer.getServer(), CREATE, ACCOUNT, userNameText,
-                hashedPwdTxt, "IT");
+                hashedPwdTxt, organisationText);
 
     }
 }

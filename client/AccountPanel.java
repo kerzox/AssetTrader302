@@ -45,7 +45,7 @@ public class AccountPanel extends JPanel implements ActionListener {
     /**
      * Constructor
      */
-    public AccountPanel(String user, String organisation, String budget, String[][] userListings) {
+    public AccountPanel(String user, String organisation, String budget, String[][] userListings, String[] allAssets) {
         this.userName = user;
         this.currentOrganisation = organisation;
         this.currentCredits = budget;

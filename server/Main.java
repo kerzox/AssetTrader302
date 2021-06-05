@@ -51,10 +51,6 @@ public class Main implements Runnable  {
 
     }
 
-    private void initalize() {
-
-    }
-
     public void runServer() {
         try (ServerSocket server = new ServerSocket(CURRENT_PORT)) {
 
@@ -154,14 +150,14 @@ public class Main implements Runnable  {
                             NetworkUtils.write(CLIENT, Request.Type.SERVERRESPONSE, "LOGIN", 0);
                         }
                     }
-                    else if (arg.equals("GET_ADMIN_INFO")) {
+                    if (arg.equals("GET_ADMIN_INFO")) {
                         String requestSource = data.get(3).toString();
-                        String userName = data.get(4).toString();
                         String[] allOrganisations = database.getAllOrganisations();
+                        System.out.println(allOrganisations);
                         String[][] allAccounts = database.getAllAccounts();
-                        NetworkUtils.write(CLIENT, Request.Type.SERVERRESPONSE, "INFO_RESPONSE", requestSource, userName, allOrganisations, allAccounts);
+                        NetworkUtils.write(CLIENT, Request.Type.SERVERRESPONSE, "INFO_RESPONSE", requestSource, allOrganisations, allAccounts);
                     }
-                    else if (arg.equals("GET_ORG_INFO")) {
+                    if (arg.equals("GET_ORG_INFO")) {
                         String requestSource = data.get(3).toString();
                         String userName = data.get(4).toString();
                         String organisation = database.getAccount(userName)[3];

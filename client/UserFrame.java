@@ -53,7 +53,7 @@ public class UserFrame extends JFrame implements ActionListener {
         this.allListings = allListings;
         this.assets = assets;
 
-        accountPanel =  new AccountPanel(user, organisation, budget, userListings);
+        accountPanel =  new AccountPanel(user, organisation, budget, userListings, assets);
         buysellPanel = new BuySellPanel(assets);
         listingsPanel =  new ListingsPanel(allListings);
 

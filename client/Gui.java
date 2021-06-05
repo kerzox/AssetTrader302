@@ -58,9 +58,8 @@ public class Gui implements Runnable {
                     user.setServerResponse(userString, organisationString, budgetString, userListings, allListings, assets);
                 }
                 if (data.get(2).toString().equals("AdminFrame")) {
-                    String userString = data.get(3).toString();
-                    String[] allOrganisations = (String[]) data.get(4);
-                    String[][] allAccounts = (String[][]) data.get(5);
+                    String[] allOrganisations = (String[]) data.get(3);
+                    String[][] allAccounts = (String[][]) data.get(4);
                     admin.setServerResponse(allOrganisations, allAccounts);
                 }
                 break;

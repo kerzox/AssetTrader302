@@ -270,7 +270,7 @@ public class JDBCDatabaseSource {
         ResultSet rs;
 
         try {
-            rs = getAssetAll.executeQuery();
+            rs = getOrganisationAll.executeQuery();
 
             while( rs.next() ) {
                 orgName = rs.getString(2);
