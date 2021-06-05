@@ -73,7 +73,7 @@ public class UserFrame extends JFrame implements ActionListener {
     }
 
     private void sendServerRequests() {
-        NetworkUtils.write(ClientServer.getServer(), Request.Header.CREATE, Request.Type.CLIENTREQUEST,
+        NetworkUtils.write(ClientServer.getServer(), Request.Type.CREATE, Request.Header.CLIENTREQUEST,
                 "GET_ORG_INFO", "UserFrame", user);
     }
 

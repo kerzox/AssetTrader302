@@ -2,17 +2,16 @@ package util;
 
 public class Request {
 
-    public enum Header {
+    public enum Type {
         ALTER,
         CREATE,
-        MESSAGE,
-        DELETE;
+        MESSAGE;
 
-        public static boolean isSQLCommand(Header command) {
+        public static boolean isSQLCommand(Type command) {
             return command != MESSAGE;
         }
     }
-    public enum Type {
+    public enum Header {
         ACCOUNT,
         ASSET,
         ORGANISATION,

@@ -133,7 +133,7 @@ public class AdminFrame extends JFrame implements ActionListener {
 
     private void getServerInformation() {
         System.out.println(admin);
-        NetworkUtils.write(ClientServer.getServer(), Request.Header.CREATE, Request.Type.CLIENTREQUEST,
+        NetworkUtils.write(ClientServer.getServer(), Request.Type.CREATE, Request.Header.CLIENTREQUEST,
                 "GET_ADMIN_INFO", "AdminFrame", admin);
     }
 

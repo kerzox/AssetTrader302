@@ -7,8 +7,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static util.Request.Header.ALTER;
-import static util.Request.Type.ACCOUNT;
+import static util.Request.Header.ACCOUNT;
+import static util.Request.Type.ALTER;
 
 public class AccountPanel extends JPanel implements ActionListener {
 

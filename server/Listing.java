@@ -2,6 +2,7 @@ package server;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.UUID;
 
 public class Listing {
@@ -40,11 +41,13 @@ public class Listing {
      * @param organisation
      * @param asset
      */
-    public Listing(UUID uuid, enumType type, int assetQuantity, int assetPrice, String user, String organisation, String asset) {
+    public Listing(UUID uuid, enumType type, int assetQuantity, int assetPrice, String user, String organisation, String asset) throws ListingException {
         this.uuid = uuid;
         active = 1; // 1 is True, 0 is False
         this.type = type.getType();
+        if (assetQuantity <= 0) throw new ListingException(String.format("Asset quantity cannot be negative, %d", assetQuantity));
         this.assetQuantity = assetQuantity;
+        if (assetPrice <= 0) throw new ListingException(String.format("Asset price cannot be negative, %d", assetPrice));
         this.assetPrice = assetPrice;
         this.user = user;
         this.asset = asset;

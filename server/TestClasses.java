@@ -2,13 +2,16 @@ package server;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TestClasses {
     Organisation o1, o2;
     User u1;
     Asset a1;
+    Listing l1;
 
     @BeforeEach
     public void initClasses() {
@@ -117,8 +120,48 @@ public class TestClasses {
     public void testAddListing() {
         // equivalence
 
+        // quantity -5
+        assertThrows(ListingException.class, () -> {
+            l1 = new Listing(UUID.randomUUID(), Listing.enumType.BUY, -5, 10, "user", "organisation", "asset");
+        });
+
+        // quantity 5
+        l1 = new Listing(UUID.randomUUID(), Listing.enumType.BUY, 5, 10, "user", "organisation", "asset");
+        assertEquals(5, l1.getAssetQuantity());
+
+        // quantity -5
+        assertThrows(ListingException.class, () -> {
+            l1 = new Listing(UUID.randomUUID(), Listing.enumType.BUY, 10, -5, "user", "organisation", "asset");
+        });
+
+        // quantity 5
+        l1 = new Listing(UUID.randomUUID(), Listing.enumType.BUY, 10, 5, "user", "organisation", "asset");
+        assertEquals(5, l1.getAssetPrice());
 
         // boundary
+
+        // negative boundary quantity
+        assertThrows(ListingException.class, () -> {
+            l1 = new Listing(UUID.randomUUID(), Listing.enumType.BUY, -10, 10, "user", "organisation", "asset");
+        });
+
+        // 0 quantity
+
+        assertThrows(ListingException.class, () -> {
+            l1 = new Listing(UUID.randomUUID(), Listing.enumType.BUY, 0, 10, "user", "organisation", "asset");
+        });
+
+        // negative boundary price
+        assertThrows(ListingException.class, () -> {
+            l1 = new Listing(UUID.randomUUID(), Listing.enumType.BUY, 10, -10, "user", "organisation", "asset");
+        });
+
+        // 0 price
+
+        assertThrows(ListingException.class, () -> {
+            l1 = new Listing(UUID.randomUUID(), Listing.enumType.BUY, 10, 0, "user", "organisation", "asset");
+        });
+
     }
 
     @Test

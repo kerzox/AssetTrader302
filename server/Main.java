@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static util.Request.Header.*;
+import static util.Request.Type.*;
 
 public class Main implements Runnable  {
 
@@ -88,19 +89,19 @@ public class Main implements Runnable  {
     private void doRequests(Socket client, List<Object> request) {
         try {
 
-            Request.Header command = Request.grabValidHeader(request.get(0).toString());
+            Request.Type command = Request.grabValidType(request.get(0).toString());
             if (command == null) throw new CommandException(request.get(0).toString() + " is invalid as a command.");
 
             // do non sql command handling
-            if (!Request.Header.isSQLCommand(command)) {
+            if (!Request.Type.isSQLCommand(command)) {
                 if (command == MESSAGE) {
                     if (request.get(1).toString().contains("quit")) running.set(false);
                 }
             }
 
-            Request.Type type = Request.grabValidType(request.get(1).toString());
-            if (type == null) throw new CommandException(request.get(1).toString()
-                    + " is an invalid type.");
+            Request.Header head  = Request.grabValidHeader(request.get(1).toString());
+            if (head == null) throw new CommandException(request.get(1).toString()
+                    + " is an invalid head.");
 
             parseClientRequest(request);
 
@@ -111,30 +112,30 @@ public class Main implements Runnable  {
     }
 
     private void parseClientRequest(List<Object> data) throws IOException {
-        switch (Request.Type.valueOf(data.get(1).toString())) {
+        switch (Request.Header.valueOf(data.get(1).toString())) {
                 case ACCOUNT:
-                    if (Request.Header.valueOf(data.get(0).toString()) == ALTER) {
+                    if (Request.Type.valueOf(data.get(0).toString()) == ALTER) {
                         editAccountDB(data);
                     }
-                    if (Request.Header.valueOf(data.get(0).toString()) == CREATE) {
+                    if (Request.Type.valueOf(data.get(0).toString()) == CREATE) {
                         addAccountDB(data);
                     }
                     break;
                 case ASSET:
-                    if (Request.Header.valueOf(data.get(0).toString()) == CREATE) {
+                    if (Request.Type.valueOf(data.get(0).toString()) == CREATE) {
                         addAssetDB(data);
                     }
                     break;
                 case LISTING:
-                    if (Request.Header.valueOf(data.get(0).toString()) == CREATE) {
+                    if (Request.Type.valueOf(data.get(0).toString()) == CREATE) {
                         addListingDB(data);
                     }
                     break;
                 case ORGANISATION:
-                    if (Request.Header.valueOf(data.get(0).toString()) == ALTER) {
+                    if (Request.Type.valueOf(data.get(0).toString()) == ALTER) {
                         editOrganisationBudgetDB(data);
                     }
-                    if (Request.Header.valueOf(data.get(0).toString()) == CREATE) {
+                    if (Request.Type.valueOf(data.get(0).toString()) == CREATE) {
                         addOrganisationDB(data);
                     }
                     break;
@@ -144,10 +145,10 @@ public class Main implements Runnable  {
                         String userName = data.get(3).toString();
                         String hashPwd = data.get(4).toString();
                         if (database.getAccount(userName) != null && database.getAccount(userName)[2].equals(hashPwd)) {
-                            NetworkUtils.write(CLIENT, Request.Type.SERVERRESPONSE, "LOGIN", 1);
+                            NetworkUtils.write(CLIENT, Request.Header.SERVERRESPONSE, "LOGIN", 1);
                         }
                         else {
-                            NetworkUtils.write(CLIENT, Request.Type.SERVERRESPONSE, "LOGIN", 0);
+                            NetworkUtils.write(CLIENT, Request.Header.SERVERRESPONSE, "LOGIN", 0);
                         }
                     }
                     if (arg.equals("GET_ADMIN_INFO")) {
@@ -155,7 +156,7 @@ public class Main implements Runnable  {
                         String[] allOrganisations = database.getAllOrganisations();
                         System.out.println(allOrganisations);
                         String[][] allAccounts = database.getAllAccounts();
-                        NetworkUtils.write(CLIENT, Request.Type.SERVERRESPONSE, "INFO_RESPONSE", requestSource, allOrganisations, allAccounts);
+                        NetworkUtils.write(CLIENT, Request.Header.SERVERRESPONSE, "INFO_RESPONSE", requestSource, allOrganisations, allAccounts);
                     }
                     if (arg.equals("GET_ORG_INFO")) {
                         String requestSource = data.get(3).toString();
@@ -166,7 +167,7 @@ public class Main implements Runnable  {
                         String[][] allListings = database.getAllListings();
                         String[] allOrgs = database.getAllOrganisations();
                         String[] assets = database.getAllAssets();
-                        NetworkUtils.write(CLIENT, Request.Type.SERVERRESPONSE, "INFO_RESPONSE", requestSource,
+                        NetworkUtils.write(CLIENT, Request.Header.SERVERRESPONSE, "INFO_RESPONSE", requestSource,
                                 userName, organisation, budget, userListings, allListings, allOrgs, assets);
 
                     }
@@ -287,7 +288,7 @@ public class Main implements Runnable  {
                 else {
 
                     System.out.println("Not enough budget");
-                    NetworkUtils.write(CLIENT, Request.Type.SERVERRESPONSE, "LISTING", "FAILED_ADD", "Not enough budget");
+                    NetworkUtils.write(CLIENT, Request.Header.SERVERRESPONSE, "LISTING", "FAILED_ADD", "Not enough budget");
                 }
             }
             else {
