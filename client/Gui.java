@@ -54,8 +54,14 @@ public class Gui implements Runnable {
                     String budgetString = data.get(5).toString();
                     String[][] userListings = (String[][]) data.get(6);
                     String[][] allListings = (String[][]) data.get(7);
-                    String[] assets = (String[]) data.get(8);
+                    String[] assets = (String[]) data.get(9);
                     user.setServerResponse(userString, organisationString, budgetString, userListings, allListings, assets);
+                }
+                if (data.get(2).toString().equals("AdminFrame")) {
+                    String userString = data.get(3).toString();
+                    String[] allOrganisations = (String[]) data.get(4);
+                    String[][] allAccounts = (String[][]) data.get(5);
+                    admin.setServerResponse(allOrganisations, allAccounts);
                 }
                 break;
             case "LISTING":

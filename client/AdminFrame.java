@@ -1,11 +1,15 @@
 package client;
 
+import server.User;
 import util.NetworkUtils;
+import util.Request;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import static util.Request.Header.*;
 import static util.Request.Type.*;
@@ -15,6 +19,11 @@ public class AdminFrame extends JFrame implements ActionListener {
     /**
      * DUMMY ARRAY OF OBJECTS
      */
+
+    private String[] allOrganisations;
+    private String[][] allAccounts;
+    private String[] allUserNames;
+
     private String[] dummyUnits = {"unit1", "unit2", "unit3"};
     private String[] dummyUsers = {"user1", "user2", "user3"};
 
@@ -54,10 +63,10 @@ public class AdminFrame extends JFrame implements ActionListener {
     private JTextField newAssetText = new JTextField();
     private JTextField newOrganisationText = new JTextField();
 
-    private JComboBox editUsernameCombo = new JComboBox(dummyUsers);
-    private JComboBox newOrganisationCombo = new JComboBox(dummyUnits);
-    private JComboBox editOrganisationCombo = new JComboBox(dummyUnits);
-    private JComboBox creditsOrganisationCombo = new JComboBox(dummyUnits);
+    private JComboBox editUsernameCombo;
+    private JComboBox newOrganisationCombo;
+    private JComboBox editOrganisationCombo;
+    private JComboBox creditsOrganisationCombo;
 
     private JButton newAccountBtn = new JButton("Add Account");
     private JButton editAccountBtn = new JButton("Edit Account");
@@ -68,10 +77,27 @@ public class AdminFrame extends JFrame implements ActionListener {
     private Color panelColor = new Color(240, 240, 240);
     private Color sideColor = new Color(205, 205, 205);
 
+    private String admin = Gui.getSessionUser();
+
     /**
      * Constructor of UserFrame
      */
     public AdminFrame() {
+        getServerInformation();
+    }
+
+    public void setServerResponse(String[] allOrganisations, String[][] allAccountData) {
+        this.allOrganisations = allOrganisations;
+        this.allAccounts = allAccountData;
+        List<String> username = new ArrayList<>();
+        for (String[] user : allAccountData) {
+            username.add(user[1]);
+        }
+        this.editUsernameCombo = new JComboBox(username.toArray());
+        this.newOrganisationCombo = new JComboBox(allOrganisations);
+        this.editOrganisationCombo = new JComboBox(allOrganisations);
+        this.creditsOrganisationCombo = new JComboBox(allOrganisations);
+
         buildFrame();
         addBtnAction();
 
@@ -82,6 +108,12 @@ public class AdminFrame extends JFrame implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Terminate program on closure
         frame.setLocationRelativeTo(null); // Centers GUI on open
         frame.setVisible(true);
+    }
+
+    private void getServerInformation() {
+        System.out.println(admin);
+        NetworkUtils.write(ClientServer.getServer(), Request.Header.CREATE, Request.Type.CLIENTREQUEST,
+                "GET_ADMIN_INFO", "AdminFrame", admin);
     }
 
     /**
@@ -567,7 +599,7 @@ public class AdminFrame extends JFrame implements ActionListener {
         System.out.println("ADDING --- Username: " + userNameText + " Password: " + hashedPwdTxt + " Organisation: " + organisationText);
 
         NetworkUtils.write(ClientServer.getServer(), CREATE, ACCOUNT, userNameText,
-                            hashedPwdTxt, organisationText);
+                hashedPwdTxt, "IT");
 
     }
 }

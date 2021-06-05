@@ -154,6 +154,13 @@ public class Main implements Runnable  {
                             NetworkUtils.write(CLIENT, Request.Type.SERVERRESPONSE, "LOGIN", 0);
                         }
                     }
+                    else if (arg.equals("GET_ADMIN_INFO")) {
+                        String requestSource = data.get(3).toString();
+                        String userName = data.get(4).toString();
+                        String[] allOrganisations = database.getAllOrganisations();
+                        String[][] allAccounts = database.getAllAccounts();
+                        NetworkUtils.write(CLIENT, Request.Type.SERVERRESPONSE, "INFO_RESPONSE", requestSource, userName, allOrganisations, allAccounts);
+                    }
                     else if (arg.equals("GET_ORG_INFO")) {
                         String requestSource = data.get(3).toString();
                         String userName = data.get(4).toString();

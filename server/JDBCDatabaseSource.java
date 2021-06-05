@@ -18,6 +18,7 @@ public class JDBCDatabaseSource {
     private static final String INSERT_ACCOUNT = "INSERT INTO account (userName, password, unitName) VALUES (?, ?, ?);";
     private static final String UPDATE_ACCOUNT = "UPDATE account SET password=?, unitName=? WHERE userName=?";
     private static final String GET_ACCOUNT = "SELECT * FROM account WHERE userName=?";
+    private static final String GET_ALL_ACCOUNTS = "SELECT * FROM account";
 
     private static final String CREATE_TABLE_ORGANISATION =
             "CREATE TABLE IF NOT EXISTS organisation ("
@@ -29,6 +30,7 @@ public class JDBCDatabaseSource {
     private static final String INSERT_UNIT = "INSERT INTO organisation (unitName, budget) VALUES (?, ?);";
     private static final String UPDATE_UNIT = "UPDATE organisation SET budget=? WHERE unitName=?";
     private static final String GET_UNIT = "SELECT * FROM organisation WHERE unitName=?;";
+    private static final String GET_UNIT_ALL = "SELECT * from organisation;";
 
     private static final String CREATE_TABLE_ASSET =
             "CREATE TABLE IF NOT EXISTS asset ("
@@ -74,9 +76,11 @@ public class JDBCDatabaseSource {
     private PreparedStatement addAccount;
     private PreparedStatement updateAccount;
     private PreparedStatement getAccount;
+    private PreparedStatement getAllAccounts;
     private PreparedStatement addOrganisation;
     private PreparedStatement updateOrganisation;
     private PreparedStatement getOrganisation;
+    private PreparedStatement getOrganisationAll;
     private PreparedStatement addAsset;
     private PreparedStatement getAsset;
     private PreparedStatement getAssetAll;
@@ -105,9 +109,11 @@ public class JDBCDatabaseSource {
             addAccount = connection.prepareStatement(INSERT_ACCOUNT);
             updateAccount = connection.prepareStatement(UPDATE_ACCOUNT);
             getAccount = connection.prepareStatement(GET_ACCOUNT, ResultSet.TYPE_SCROLL_INSENSITIVE);
+            getAllAccounts = connection.prepareStatement(GET_ALL_ACCOUNTS, ResultSet.TYPE_SCROLL_INSENSITIVE);
             addOrganisation = connection.prepareStatement(INSERT_UNIT);
             updateOrganisation = connection.prepareStatement(UPDATE_UNIT);
             getOrganisation = connection.prepareStatement(GET_UNIT, ResultSet.TYPE_SCROLL_INSENSITIVE);
+            getOrganisationAll = connection.prepareStatement(GET_UNIT_ALL, ResultSet.TYPE_SCROLL_INSENSITIVE);
             addAsset = connection.prepareStatement(INSERT_ASSET);
             getAsset = connection.prepareStatement(GET_ASSET, ResultSet.TYPE_SCROLL_INSENSITIVE);
             getAssetAll = connection.prepareStatement(GET_ASSET_ALL, ResultSet.TYPE_SCROLL_INSENSITIVE);
@@ -192,6 +198,32 @@ public class JDBCDatabaseSource {
         return null;
     }
 
+    public String[][] getAllAccounts() {
+        List<String[]> list = new ArrayList<>();
+        String userID;
+        String userName;
+        String unit;
+        String pwd;
+        ResultSet rs;
+
+        try {
+            rs = getAllAccounts.executeQuery();
+            while(rs.next()) {
+                userID = rs.getString("userID");
+                userName = rs.getString("userName");
+                pwd = rs.getString("password");
+                unit = rs.getString("unitName");
+                list.add(new String[] {userID, userName, pwd, unit});
+            }
+            String[][] ret = new String[list.size()][list.size()];
+            return list.toArray(ret);
+
+        } catch(SQLException SQLex) {
+            System.err.println(SQLex);
+        }
+        return null;
+    }
+
     /**
      * Adds organisation to database
      * @param a organisation object to be added
@@ -228,6 +260,32 @@ public class JDBCDatabaseSource {
         } catch (SQLException SQLex) {
             System.err.println(SQLex);
         }
+    }
+
+
+    public String[] getAllOrganisations() {
+        List<String> list = new ArrayList<>();
+        String[] organisations;
+        String orgName;
+        ResultSet rs;
+
+        try {
+            rs = getAssetAll.executeQuery();
+
+            while( rs.next() ) {
+                orgName = rs.getString(2);
+                list.add(orgName);
+            }
+
+            organisations = new String[list.size()];
+            list.toArray(organisations);
+            return organisations;
+
+        } catch(SQLException SQLex) {
+            System.err.println(SQLex);
+        }
+
+        return null;
     }
 
     /**

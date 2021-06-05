@@ -111,4 +111,19 @@ public class TestClasses {
 
     }
 
+    @Test
+    public void testAddListing() {
+        // equivalence
+
+
+        // boundary
+    }
+
+    @Test
+    public void testNewAsset() {
+        // equivalence
+
+
+        // boundary
+    }
 }
