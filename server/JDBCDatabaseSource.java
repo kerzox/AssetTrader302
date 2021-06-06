@@ -607,11 +607,11 @@ public class JDBCDatabaseSource {
 
             }
             else if (thisType.equals("SELL")) {
-                getListingBuy.setString(1, thisType);
-                getListingBuy.setString(2, thisUnit);
-                getListingBuy.setString(3, thisAsset);
-                getListingBuy.setString(4, String.valueOf(thisPrice));
-                rs = getListingBuy.executeQuery();
+                getListingSell.setString(1, thisType);
+                getListingSell.setString(2, thisUnit);
+                getListingSell.setString(3, thisAsset);
+                getListingSell.setString(4, String.valueOf(thisPrice));
+                rs = getListingSell.executeQuery();
                 rs.last();
                 resolveUUID = rs.getString("listingID");
                 resolveQuantity = Integer.valueOf(rs.getString("assetQuantity"));
