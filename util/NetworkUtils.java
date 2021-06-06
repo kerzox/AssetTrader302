@@ -20,8 +20,8 @@ public class NetworkUtils {
             output.flush();
             List<Object> temp = new ArrayList<>(Arrays.asList(data));
             new ObjectOutputStream(output).writeObject(temp);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

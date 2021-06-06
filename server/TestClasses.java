@@ -1,10 +1,20 @@
 package server;
 
+import client.ClientServer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import server.mock.MockServer;
+import util.NetworkUtils;
 
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -236,4 +246,31 @@ public class TestClasses {
         database.addOrganisation(unit2);
     }
 
+    MockServer mock = new MockServer();
+
+    // mock network utils
+    public void mockWrite(Object... data) {
+        List<Object> temp = new ArrayList<>(Arrays.asList(data));
+        mock.doRequests(temp);
+    }
+
+    @Test
+    public void clientSendsIncorrectCommand() {
+        assertThrows(CommandException.class, ()-> {
+            mockWrite("REQUEST1", "CREATE", "add to database");
+        });
+    }
+
+    @Test
+    public void clientSendsIncorrectHeader() {
+        assertThrows(CommandException.class, ()-> {
+            mockWrite("REQUEST", "ADD", "add to database");
+        });
+    }
+
+    @Test
+    public void clientSendsQuitServer() {
+        mockWrite("MESSAGE", "quit");
+        assertEquals(true, mock.isShutdown());
+    }
 }
