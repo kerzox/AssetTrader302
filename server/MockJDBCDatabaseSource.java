@@ -146,36 +146,23 @@ public class MockJDBCDatabaseSource {
      * Adds account to database
      * @param a User object to be added
      */
-    public void addAccount(User a) {
-        try {
-            addAccount.setString(1, a.getUsername());
-            addAccount.setString(2, a.getPassword());
-            addAccount.setString(3, getOrganisation(a.getUnitName())[1]);
-            addAccount.execute();
-        } catch (SQLIntegrityConstraintViolationException SQLICVex) {
-            // Duplicate Entry
-            System.err.println(SQLICVex);
-            System.out.println("Duplicate account " + a.getUsername());
-            System.out.println("Failed to add account");
-        } catch (SQLException SQLex) {
-            System.err.println(SQLex);
-            System.out.println("Failed to add account");
-        }
+    public void addAccount(User a) throws SQLException {
+        addAccount.setString(1, a.getUsername());
+        addAccount.setString(2, a.getPassword());
+        addAccount.setString(3, getOrganisation(a.getUnitName())[1]);
+        addAccount.execute();
     }
 
     /**
      * Updates existing account in database
      * @param a User object to be updated
      */
-    public void updateAccount(User a) {
-        try {
-            updateAccount.setString(1, a.getPassword());
-            updateAccount.setString(2, getOrganisation(a.getUnitName())[1]);
-            updateAccount.setString(3, a.getUsername());
-            updateAccount.execute();
-        } catch (SQLException SQLex) {
-            System.err.println(SQLex);
-        }
+    public void updateAccount(User a) throws SQLException {
+        getAccount(a.getUsername());
+        updateAccount.setString(1, a.getPassword());
+        updateAccount.setString(2, getOrganisation(a.getUnitName())[1]);
+        updateAccount.setString(3, a.getUsername());
+        updateAccount.execute();
     }
 
     /**
@@ -183,7 +170,7 @@ public class MockJDBCDatabaseSource {
      * @param name Username of account
      * @return User account as array list, else null
      */
-    public String[] getAccount(String name) {
+    public String[] getAccount(String name) throws SQLException {
         String[] account;
         String userID;
         String userName;
@@ -191,48 +178,34 @@ public class MockJDBCDatabaseSource {
         String unit;
         ResultSet rs;
 
-        try {
-            getAccount.setString(1, name);
-            rs = getAccount.executeQuery();
-            rs.first();
-            userID = rs.getString("userID");
-            userName = rs.getString("userName");
-            pwd = rs.getString("password");
-            unit = rs.getString("unitName");
-            account = new String[] {userID, userName, pwd, unit};
-            return account;
-
-        } catch (SQLException SQLex) {
-            System.err.println(SQLex);
-            System.out.println("No account " + name);
-        }
-        return null;
+        getAccount.setString(1, name);
+        rs = getAccount.executeQuery();
+        rs.first();
+        userID = rs.getString("userID");
+        userName = rs.getString("userName");
+        pwd = rs.getString("password");
+        unit = rs.getString("unitName");
+        account = new String[] {userID, userName, pwd, unit};
+        return account;
     }
 
-    public String[][] getAllAccounts() {
+    public String[][] getAllAccounts() throws SQLException {
         List<String[]> list = new ArrayList<>();
         String userID;
         String userName;
         String unit;
         String pwd;
         ResultSet rs;
-
-        try {
-            rs = getAllAccounts.executeQuery();
-            while(rs.next()) {
-                userID = rs.getString("userID");
-                userName = rs.getString("userName");
-                pwd = rs.getString("password");
-                unit = rs.getString("unitName");
-                list.add(new String[] {userID, userName, pwd, unit});
-            }
-            String[][] ret = new String[list.size()][list.size()];
-            return list.toArray(ret);
-
-        } catch(SQLException SQLex) {
-            System.err.println(SQLex);
+        rs = getAllAccounts.executeQuery();
+        while(rs.next()) {
+            userID = rs.getString("userID");
+            userName = rs.getString("userName");
+            pwd = rs.getString("password");
+            unit = rs.getString("unitName");
+            list.add(new String[] {userID, userName, pwd, unit});
         }
-        return null;
+        String[][] ret = new String[list.size()][list.size()];
+        return list.toArray(ret);
     }
 
     /**
@@ -250,42 +223,31 @@ public class MockJDBCDatabaseSource {
      * @param a
      * @param credits
      */
-    public void updateOrganisation(Organisation a, int credits) {
-        try {
-            int currentBudget = Integer.parseInt(getOrganisation(a.getName())[2]);
-            int newBudget = currentBudget + credits;
-            updateOrganisation.setString(1, String.valueOf(newBudget));
-            updateOrganisation.setString(2, a.getName());
-            updateOrganisation.execute();
-        } catch (SQLException SQLex) {
-            System.err.println(SQLex);
-        }
+    public void updateOrganisation(Organisation a, int credits) throws SQLException {
+        int currentBudget = Integer.parseInt(getOrganisation(a.getName())[2]);
+        int newBudget = currentBudget + credits;
+        updateOrganisation.setString(1, String.valueOf(newBudget));
+        updateOrganisation.setString(2, a.getName());
+        updateOrganisation.execute();
     }
 
 
-    public String[] getAllOrganisations() {
+    public String[] getAllOrganisations() throws SQLException {
         List<String> list = new ArrayList<>();
         String[] organisations;
         String orgName;
         ResultSet rs;
 
-        try {
-            rs = getOrganisationAll.executeQuery();
+        rs = getOrganisationAll.executeQuery();
 
-            while( rs.next() ) {
-                orgName = rs.getString(2);
-                list.add(orgName);
-            }
-
-            organisations = new String[list.size()];
-            list.toArray(organisations);
-            return organisations;
-
-        } catch(SQLException SQLex) {
-            System.err.println(SQLex);
+        while( rs.next() ) {
+            orgName = rs.getString(2);
+            list.add(orgName);
         }
 
-        return null;
+        organisations = new String[list.size()];
+        list.toArray(organisations);
+        return organisations;
     }
 
     /**
@@ -293,17 +255,13 @@ public class MockJDBCDatabaseSource {
      * @param unit
      * @param credits
      */
-    public void awardCredits(String unit, int credits) {
-        try {
-            String[] org = getOrganisation(unit);
-            int currentBudget = Integer.valueOf(org[2]);
-            int newBudget = currentBudget + credits;
-            updateOrganisation.setString(1, String.valueOf(newBudget));
-            updateOrganisation.setString(2, unit);
-            updateOrganisation.execute();
-        } catch (SQLException SQLex) {
-            System.err.println(SQLex);
-        }
+    public void awardCredits(String unit, int credits) throws SQLException, NullPointerException {
+        String[] org = getOrganisation(unit);
+        int currentBudget = Integer.valueOf(org[2]);
+        int newBudget = currentBudget + credits;
+        updateOrganisation.setString(1, String.valueOf(newBudget));
+        updateOrganisation.setString(2, unit);
+        updateOrganisation.execute();
     }
 
     /**
@@ -311,46 +269,29 @@ public class MockJDBCDatabaseSource {
      * @param name Name of organisation
      * @return Organisation as an array list, else null
      */
-    public String[] getOrganisation(String name) {
+    public String[] getOrganisation(String name) throws SQLException {
         String[] organisation;
         String unitID;
         String unitName;
         String budget;
         ResultSet rs;
 
-        try {
-            getOrganisation.setString(1, name);
-            rs = getOrganisation.executeQuery();
-            rs.first();
-            unitID = rs.getString("unitID");
-            unitName = rs.getString("unitName");
-            budget = rs.getString("budget");
-            organisation = new String[] {unitID, unitName, budget};
-            return organisation;
-        } catch (SQLException SQLex) {
-            System.err.println(SQLex);
-            System.out.println("No organisation " + name);
-        }
-        return null;
+        getOrganisation.setString(1, name);
+        rs = getOrganisation.executeQuery();
+        rs.first();
+        unitID = rs.getString("unitID");
+        unitName = rs.getString("unitName");
+        budget = rs.getString("budget");
+        organisation = new String[]{unitID, unitName, budget};
+        return organisation;
     }
-
     /**
      * Adds asset to database
      * @param a asset object to be added
      */
-    public void addAsset(Asset a) {
-        try {
-            addAsset.setString(1, a.getName());
-            addAsset.execute();
-        } catch (SQLIntegrityConstraintViolationException SQLICVex) {
-            // Duplicate Entry
-            System.err.println(SQLICVex);
-            System.out.println("Duplicate asset " + a.getName());
-            System.out.println("Failed to add asset");
-        } catch (SQLException SQLex) {
-            System.err.println(SQLex);
-            System.out.println("Failed to add asset");
-        }
+    public void addAsset(Asset a) throws SQLException {
+        addAsset.setString(1, a.getName());
+        addAsset.execute();
     }
 
     /**
@@ -358,76 +299,58 @@ public class MockJDBCDatabaseSource {
      * @param name Name of asset
      * @return Asset as an array list, else null
      */
-    public String[] getAsset(String name) {
+    public String[] getAsset(String name) throws SQLException {
         String[] asset;
         String assetID;
         String assetName;
         ResultSet rs;
 
-        try {
-            getAsset.setString(1, name);
-            rs = getAsset.executeQuery();
-            rs.first();
-            assetID = rs.getString("assetID");
-            assetName = rs.getString("assetName");
-            asset = new String[] {assetID, assetName};
-            return asset;
-        } catch (SQLException SQLex) {
-            System.err.println(SQLex);
-        }
-        return null;
+        getAsset.setString(1, name);
+        rs = getAsset.executeQuery();
+        rs.first();
+        assetID = rs.getString("assetID");
+        assetName = rs.getString("assetName");
+        asset = new String[] {assetID, assetName};
+        return asset;
     }
 
     /**
      * Gets all assets from the database
      * @return string array of all assets else null
      */
-    public String[] getAllAssets() {
+    public String[] getAllAssets() throws SQLException {
         List<String> list = new ArrayList<>();
         String[] assets;
         String assetName;
         ResultSet rs;
 
-        try {
-            rs = getAssetAll.executeQuery();
+        rs = getAssetAll.executeQuery();
 
-            while( rs.next() ) {
-                assetName = rs.getString(2);
-                list.add(assetName);
-            }
-
-            assets = new String[list.size()];
-            list.toArray(assets);
-            return assets;
-
-        } catch(SQLException SQLex) {
-            System.err.println(SQLex);
+        while( rs.next() ) {
+            assetName = rs.getString(2);
+            list.add(assetName);
         }
 
-        return null;
+        assets = new String[list.size()];
+        list.toArray(assets);
+        return assets;
     }
 
     /**
      * Adds listing to database
      * @param a listing object to be added
      */
-    public void addListing(Listing a) {
-        try {
-            addListing.setString(1, a.getUUID().toString());
-            addListing.setString(2, String.valueOf(a.getActive()));
-            addListing.setString(3, a.getType());
-            addListing.setString(4, a.getUsername());
-            addListing.setString(5, a.getUnit());
-            addListing.setString(6, a.getAsset());
-            addListing.setString(7, String.valueOf(a.getAssetQuantity()));
-            addListing.setString(8, String.valueOf(a.getAssetPrice()));
-            addListing.setString(9, a.getDateTime());
-            addListing.execute();
-        } catch (SQLException SQLex) {
-            //SQLex.printStackTrace();
-            System.err.println(SQLex);
-            System.out.println("Failed to add listing");
-        }
+    public void addListing(Listing a) throws SQLException {
+        addListing.setString(1, a.getUUID().toString());
+        addListing.setString(2, String.valueOf(a.getActive()));
+        addListing.setString(3, a.getType());
+        addListing.setString(4, a.getUsername());
+        addListing.setString(5, a.getUnit());
+        addListing.setString(6, a.getAsset());
+        addListing.setString(7, String.valueOf(a.getAssetQuantity()));
+        addListing.setString(8, String.valueOf(a.getAssetPrice()));
+        addListing.setString(9, a.getDateTime());
+        addListing.execute();
     }
 
     /**
@@ -435,14 +358,10 @@ public class MockJDBCDatabaseSource {
      * @param uuid
      * @param quantity
      */
-    public void updateListing(String uuid, int quantity) {
-        try {
-            updateListing.setString(1, String.valueOf(quantity));
-            updateListing.setString(2, uuid);
-            updateListing.executeQuery();
-        } catch (SQLException SQLex) {
-            System.err.println(SQLex);
-        }
+    public void updateListing(String uuid, int quantity) throws SQLException {
+        updateListing.setString(1, String.valueOf(quantity));
+        updateListing.setString(2, uuid);
+        updateListing.executeQuery();
 
     }
 
@@ -450,14 +369,9 @@ public class MockJDBCDatabaseSource {
      * Closes listing in database
      * @param uuid
      */
-    public void closeListing(String uuid) {
-        try {
-            closeListing.setString(1, uuid);
-            closeListing.executeQuery();
-        } catch (SQLException SQLex) {
-            System.err.println(SQLex);
-        }
-
+    public void closeListing(String uuid) throws SQLException {
+        closeListing.setString(1, uuid);
+        closeListing.executeQuery();
     }
 
     /**
@@ -540,7 +454,7 @@ public class MockJDBCDatabaseSource {
      * Resolve listings in database
      * @param a Listing object
      */
-    public void resolveListings(Listing a) {
+    public void resolveListings(Listing a) throws SQLException {
         String thisUUID = a.getUUID().toString();
         String[] thisListing = getListing(thisUUID);
         String thisType = thisListing[2];
@@ -660,7 +574,7 @@ public class MockJDBCDatabaseSource {
      * @param uuid
      * @return string array of listing
      */
-    public String[] getListing(String uuid) {
+    public String[] getListing(String uuid) throws SQLException {
         String[] listing;
         String listingID;
         String listingType;
@@ -673,32 +587,27 @@ public class MockJDBCDatabaseSource {
         String dateTime;
         ResultSet rs;
 
-        try {
-            getListing.setString(1, uuid);
-            rs = getListing.executeQuery();
-            rs.first();
-            listingID = rs.getString("listingID");
-            listingActive = rs.getString("listingActive");
-            listingType = rs.getString("listingType");
-            userName = rs.getString("userName");
-            unitName = rs.getString("unitName");
-            assetName = rs.getString("assetName");
-            assetQuantity = rs.getString("assetQuantity");
-            assetPrice = rs.getString("assetPrice");
-            dateTime = rs.getString("dateTime");
-            listing = new String[] {listingID, listingActive, listingType, userName, unitName, assetName,
-                    assetQuantity, assetPrice, dateTime};
-            return listing;
-        } catch (SQLException SQLex) {
-            System.err.println(SQLex);
-        }
-        return null;
+        getListing.setString(1, uuid);
+        rs = getListing.executeQuery();
+        rs.first();
+        listingID = rs.getString("listingID");
+        listingActive = rs.getString("listingActive");
+        listingType = rs.getString("listingType");
+        userName = rs.getString("userName");
+        unitName = rs.getString("unitName");
+        assetName = rs.getString("assetName");
+        assetQuantity = rs.getString("assetQuantity");
+        assetPrice = rs.getString("assetPrice");
+        dateTime = rs.getString("dateTime");
+        listing = new String[] {listingID, listingActive, listingType, userName, unitName, assetName,
+                assetQuantity, assetPrice, dateTime};
+        return listing;
     }
 
     /**
      * Closes database connection.
      */
-    public void closeDatabaseSource() {
+    public void closeDatabaseSource() throws NullPointerException {
         JDBCConnection.closeConnection();
     }
 

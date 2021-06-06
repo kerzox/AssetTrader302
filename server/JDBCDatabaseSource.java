@@ -158,6 +158,7 @@ public class JDBCDatabaseSource {
      */
     public void updateAccount(User a) {
         try {
+            getAccount(a.getUsername());
             updateAccount.setString(1, a.getPassword());
             updateAccount.setString(2, getOrganisation(a.getUnitName())[1]);
             updateAccount.setString(3, a.getUsername());

@@ -44,15 +44,9 @@ public class MockJDBCConnection {
     /**
      * Closes database connection.
      */
-    public static void closeConnection() {
-        try {
-            // close connection
-            connection.close();
-
-        }
-        catch (SQLException sqle) {
-            System.err.println(sqle);
-        }
+    public static void closeConnection() throws SQLException {
+        // close connection
+        connection.close();
     }
 
     /**
