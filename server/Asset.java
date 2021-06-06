@@ -2,6 +2,7 @@ package server;
 
 import util.RegexUtil;
 
+import static util.RegexUtil.LETTERS_WHITESPACE_INSENSITIVE;
 import static util.RegexUtil.ONLY_LETTERS_INSENSITIVE;
 
 public class Asset {
@@ -17,8 +18,8 @@ public class Asset {
      * @param name name of asset
      */
     public Asset(String name) throws TextInputException {
-        if (ONLY_LETTERS_INSENSITIVE.matcher(name).find()) {
-            throw new TextInputException(String.format("%s contains invalid characters, cannot contain spaces, symbols or numbers", name));
+        if (LETTERS_WHITESPACE_INSENSITIVE.matcher(name).find()) {
+            throw new TextInputException(String.format("%s contains invalid characters, cannot contain symbols or numbers", name));
         }
         if (!(name.length() >= MIN_LENGTH && name.length() <= MAX_LENGTH)) {
             throw new TextInputException(String.format("%s does not fit constants of size at %d, must be between %d and %d", name, name.length(), MIN_LENGTH, MAX_LENGTH));

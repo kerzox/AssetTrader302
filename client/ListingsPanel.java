@@ -55,7 +55,7 @@ public class ListingsPanel extends JPanel {
         panelGrid1.setBackground(panelColor);
         panelGrid1.setLayout(gblGrid1);
 
-        this.table = buildTable(buildListings());
+        this.table.setModel(new UneditableTableModel(listings, columns));
 
         JScrollPane scrollPane = new JScrollPane(table);
 
