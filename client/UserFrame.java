@@ -60,7 +60,7 @@ public class UserFrame extends JFrame implements ActionListener {
             accountPanel =  new AccountPanel(user, organisation, budget, userListings, assets);
             buysellPanel = new BuySellPanel(assets);
             listingsPanel =  new ListingsPanel(allListings);
-
+            System.out.println(SwingUtilities.isEventDispatchThread());
             buildFrame();
             addBtnAction();
 

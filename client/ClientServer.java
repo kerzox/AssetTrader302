@@ -3,6 +3,7 @@ package client;
 import util.NetworkUtils;
 import util.Request;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -49,7 +50,16 @@ public class ClientServer implements Runnable {
     }
 
     private void parseServer(List<Object> data) {
-        Gui.readServer(data);
+        if (SwingUtilities.isEventDispatchThread()) {
+            Gui.readServer(data);
+        } else {
+            SwingUtilities.invokeLater(
+                    new Runnable() {
+                        public void run() {
+                            Gui.readServer(data);
+                        }
+                    });
+        }
     }
 
     public static Socket getServer() {

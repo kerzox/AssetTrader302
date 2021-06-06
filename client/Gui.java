@@ -36,6 +36,7 @@ public class Gui implements Runnable {
     public static void buildAdmin() { admin = new AdminFrame(); }
 
     public static void readServer(List<Object> data) {
+        System.out.println(SwingUtilities.isEventDispatchThread());
         String arg = data.get(1).toString();
         switch(arg) {
             case "LOGIN":
