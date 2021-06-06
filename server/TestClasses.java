@@ -3,7 +3,9 @@ package server;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.sql.SQLException;
 import java.util.UUID;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -205,4 +207,33 @@ public class TestClasses {
             a1 = new Asset("test1");
         });
     }
+
+    // Glass Box
+    MockJDBCDatabaseSource database = new MockJDBCDatabaseSource();
+    Organisation unit1 = new Organisation("unit1");
+    Organisation unit2 = new Organisation("unit2");
+
+    // GLASS BOX TESTING
+    @BeforeEach
+    public void initDatabase() throws SQLException {
+        database.dropAllTables();
+        database = new MockJDBCDatabaseSource();
+    }
+
+    @Test
+    public void testAddOrganisation() throws SQLException {
+        database.addOrganisation(unit1);
+        database.addOrganisation(unit2);
+        // Add duplicate entry
+        assertThrows(SQLException.class, ()-> {
+            database.addOrganisation(unit1);
+        });
+    }
+
+    @Test
+    public void testUpdateBudget() throws SQLException {
+        database.addOrganisation(unit1);
+        database.addOrganisation(unit2);
+    }
+
 }

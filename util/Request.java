@@ -22,11 +22,21 @@ public class Request {
 
 
     public static Type grabValidType(String toString) {
-        return Type.valueOf(toString);
+        for (Type value : Type.values()) {
+            if (value.toString().equals(toString)) {
+                return value;
+            }
+        }
+        return null;
     }
 
     public static Header grabValidHeader(String toString) {
-        return Header.valueOf(toString);
+        for (Header value : Header.values()) {
+            if (value.toString().equals(toString)) {
+                return value;
+            }
+        }
+        return null;
     }
 
 

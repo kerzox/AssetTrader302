@@ -4,10 +4,12 @@ import util.NetworkUtils;
 import util.Request;
 
 import javax.sound.midi.SysexMessage;
+import java.awt.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static util.Request.Header.*;
@@ -90,7 +92,7 @@ public class Main implements Runnable  {
         try {
 
             Request.Type command = Request.grabValidType(request.get(0).toString());
-            if (command == null) throw new CommandException(request.get(0).toString() + " is invalid as a command.");
+            if (command == null) throw new CommandException(request.get(0).toString() + " is an invalid command.");
 
             // do non sql command handling
             if (!Request.Type.isSQLCommand(command)) {
